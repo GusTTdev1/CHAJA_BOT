@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChajaBot · Gestión de producción</title>
+<link rel="icon" href="assets/logo.png" type="image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ BARRA SUPERIOR ============ -->
+<header class="topbar">
+  <div class="topbar__left">
+    <button class="icon-btn" id="menuToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar">
+      <span class="hamburger"><span></span><span></span><span></span></span>
+    </button>
+    <a class="brand" href="#" aria-label="ChajaBot, inicio">
+      <img src="assets/logo.png" alt="" class="brand__mark" id="brandLogo" width="34" height="34">
+      <span class="brand__wordmark">Chaja<em>Bot</em></span>
+    </a>
+  </div>
+
+  <div class="topbar__center">
+    <span class="topbar__title">Gestión de producciones agropecuarias</span>
+  </div>
+
+  <div class="topbar__right">
+    <button class="user-orb" id="userToggle" aria-label="Cuenta" aria-expanded="false" aria-controls="userPanel">
+      <span class="user-orb__initials" id="userInitials">?</span>
+    </button>
+
+    <!-- Panel de usuario: estructura lista para Auth0 -->
+    <div class="user-panel" id="userPanel" hidden>
+      <div class="user-panel__header">
+        <div class="user-panel__avatar" id="userAvatar" aria-hidden="true"></div>
+        <div>
+          <p class="user-panel__name" id="userName">Invitado</p>
+          <p class="user-panel__email" id="userEmail">Sin sesión iniciada</p>
+        </div>
+      </div>
+      <div class="user-panel__divider"></div>
+      <button class="user-panel__item" id="loginBtn" data-auth-action="login">
+        Iniciar sesión
+      </button>
+      <button class="user-panel__item" id="logoutBtn" data-auth-action="logout" hidden>
+        Cerrar sesión
+      </button>
+      <button class="user-panel__item" disabled>
+        Mi cuenta <span class="tag-soon">próximamente</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MENÚ LATERAL ============ -->
+<div class="scrim" id="scrim" hidden></div>
+<nav class="sidebar" id="sidebar" aria-label="Menú principal" hidden>
+  <div class="sidebar__header">
+    <span class="sidebar__eyebrow">Menú</span>
+    <button class="icon-btn icon-btn--ghost" id="sidebarClose" aria-label="Cerrar menú">✕</button>
+  </div>
+  <ul class="sidebar__list">
+    <li><a class="sidebar__link is-active" href="#main">Panel general</a></li>
+    <li><a class="sidebar__link" href="#produccion">Producciones</a></li>
+    <li><a class="sidebar__link" href="#stock">Stock</a></li>
+    <li><a class="sidebar__link" href="#grupos">Grupos</a></li>
+    <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Estadísticas <span class="tag-soon">próximamente</span></a></li>
+    <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Historial <span class="tag-soon">próximamente</span></a></li>
+    <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Usuarios y permisos <span class="tag-soon">próximamente</span></a></li>
+    <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Configuración <span class="tag-soon">próximamente</span></a></li>
+    <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">RADIO EL CHAJA <span class="tag-soon">próximamente</span></a></li>
+  </ul>
+  <div class="sidebar__footer">
+    <p>ChajaBot v0.1 · conectado localmente</p>
+  </div>
+</nav>
+
+<!-- ============ CONTENIDO PRINCIPAL ============ -->
+<main id="main">
+
+  <section class="hero">
+    <p class="hero__eyebrow">Campaña en curso</p>
+    <h1 class="hero__title">El campo, <em>en orden.</em></h1>
+    <p class="hero__lede">Registrá producciones, seguí el stock y separá tus animales en grupos, todo desde un mismo lugar.</p>
+  </section>
+
+  <!-- 1. Registrar nuevas producciones -->
+  <section class="panel" id="produccion" aria-labelledby="produccion-title">
+    <header class="panel__header">
+      <div>
+        <span class="panel__eyebrow">01 · Alta</span>
+        <h2 class="panel__title" id="produccion-title">Registrar nuevas producciones</h2>
+        <p class="panel__desc">Dar de alta un lote de animales nuevo en el sistema.</p>
+      </div>
+    </header>
+
+    <button class="cta-card" id="openProductionModal">
+      <span class="cta-card__icon" aria-hidden="true">+</span>
+      <span class="cta-card__body">
+        <span class="cta-card__title">Nueva producción</span>
+        <span class="cta-card__hint">Gallinas ponedoras · Chanchos · Pollos parrilleros</span>
+      </span>
+      <span class="cta-card__arrow" aria-hidden="true">→</span>
+    </button>
+
+    <div class="production-list" id="productionList" aria-live="polite">
+      <!-- Se completa vía JS con datos de ejemplo -->
+    </div>
+  </section>
+
+  <!-- 2. Entrada y salida de stock -->
+  <section class="panel" id="stock" aria-labelledby="stock-title">
+    <header class="panel__header">
+      <div>
+        <span class="panel__eyebrow">02 · Stock</span>
+        <h2 class="panel__title" id="stock-title">Entrada y salida de stock</h2>
+        <p class="panel__desc">Registrá cada movimiento de kilos y unidades producidas.</p>
+      </div>
+      <div class="segmented" id="stockDirectionToggle" role="tablist" aria-label="Tipo de movimiento">
+        <button class="segmented__btn is-active" role="tab" aria-selected="true" data-direction="entrada">Entrada</button>
+        <button class="segmented__btn" role="tab" aria-selected="false" data-direction="salida">Salida</button>
+      </div>
+    </header>
+
+    <form class="stock-form" id="stockForm">
+      <div class="field-grid">
+        <label class="field">
+          <span class="field__label">Tipo de stock</span>
+          <select class="field__input" id="stockType" name="stockType" required>
+            <option value="" disabled selected>Elegir…</option>
+            <option value="kg_pollo">Kg de pollo</option>
+            <option value="huevos">Huevos</option>
+            <option value="kg_chancho">Kg de chancho</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label" id="stockQtyLabel">Cantidad</span>
+          <input class="field__input" id="stockQty" name="stockQty" type="number" min="0" step="0.1" placeholder="0" required>
+        </label>
+        <label class="field">
+          <span class="field__label">Fecha</span>
+          <input class="field__input" id="stockDate" name="stockDate" type="date" required>
+        </label>
+      </div>
+      <label class="field field--wide">
+        <span class="field__label">Nota <span class="field__optional">(opcional)</span></span>
+        <input class="field__input" id="stockNote" name="stockNote" type="text" placeholder="Ej: venta a distribuidor, pérdida por mortandad…">
+      </label>
+      <div class="form-actions">
+        <span class="form-status" id="stockFormStatus" role="status"></span>
+        <button class="btn btn--primary" type="submit">
+          <span id="stockSubmitLabel">Registrar entrada</span>
+        </button>
+      </div>
+    </form>
+
+    <div class="ledger" id="stockLedger" aria-live="polite">
+      <!-- Movimientos de ejemplo cargados vía JS -->
+    </div>
+  </section>
+
+  <!-- 3. Grupos de producción -->
+  <section class="panel" id="grupos" aria-labelledby="grupos-title">
+    <header class="panel__header">
+      <div>
+        <span class="panel__eyebrow">03 · Seguimiento</span>
+        <h2 class="panel__title" id="grupos-title">Grupos de producción</h2>
+        <p class="panel__desc">Separá animales de una producción en camadas para seguirlas de forma independiente.</p>
+      </div>
+      <button class="btn btn--outline" id="openGroupModal">+ Nuevo grupo</button>
+    </header>
+
+    <div class="groups-grid" id="groupsGrid" aria-live="polite">
+      <!-- Grupos de ejemplo cargados vía JS -->
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>ChajaBot — gestión agropecuaria. Datos de ejemplo, listo para conectar a Auth0, n8n y una API propia.</p>
+</footer>
+
+<!-- ============ MODAL: NUEVA PRODUCCIÓN ============ -->
+<div class="modal-scrim" id="productionModalScrim" hidden>
+  <div class="modal" id="productionModal" role="dialog" aria-modal="true" aria-labelledby="productionModalTitle">
+    <header class="modal__header">
+      <h3 class="modal__title" id="productionModalTitle">Nueva producción</h3>
+      <button class="icon-btn icon-btn--ghost" id="productionModalClose" aria-label="Cerrar">✕</button>
+    </header>
+
+    <div class="modal__body">
+      <p class="modal__step-label" id="productionStepLabel">Paso 1 — Elegí el tipo</p>
+
+      <div class="type-select" id="productionTypeSelect">
+        <button class="type-card" data-type="ponedoras">
+          <span class="type-card__icon" aria-hidden="true">🥚</span>
+          <span class="type-card__label">Gallinas ponedoras</span>
+        </button>
+        <button class="type-card" data-type="chanchos">
+          <span class="type-card__icon" aria-hidden="true">🐖</span>
+          <span class="type-card__label">Chanchos</span>
+        </button>
+        <button class="type-card" data-type="parrilleros">
+          <span class="type-card__icon" aria-hidden="true">🐔</span>
+          <span class="type-card__label">Pollos parrilleros</span>
+        </button>
+      </div>
+
+      <form class="production-form" id="productionForm" hidden>
+        <button type="button" class="back-link" id="productionBack">← Elegir otro tipo</button>
+        <p class="production-form__type" id="productionFormType"></p>
+
+        <label class="field">
+          <span class="field__label">Cantidad total de animales</span>
+          <input class="field__input" type="number" min="1" id="productionQty" name="productionQty" required>
+        </label>
+
+        <label class="field" id="productionAgeField" hidden>
+          <span class="field__label">Edad de los animales (semanas)</span>
+          <input class="field__input" type="number" min="0" id="productionAge" name="productionAge">
+        </label>
+
+        <label class="field">
+          <span class="field__label">Nombre de la producción <span class="field__optional">(opcional)</span></span>
+          <input class="field__input" type="text" id="productionName" name="productionName" placeholder="Se genera uno automáticamente si lo dejás vacío">
+        </label>
+
+        <div class="form-actions">
+          <span class="form-status" id="productionFormStatus" role="status"></span>
+          <button class="btn btn--primary" type="submit">Guardar producción</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: NUEVO GRUPO ============ -->
+<div class="modal-scrim" id="groupModalScrim" hidden>
+  <div class="modal" id="groupModal" role="dialog" aria-modal="true" aria-labelledby="groupModalTitle">
+    <header class="modal__header">
+      <h3 class="modal__title" id="groupModalTitle">Nuevo grupo</h3>
+      <button class="icon-btn icon-btn--ghost" id="groupModalClose" aria-label="Cerrar">✕</button>
+    </header>
+
+    <div class="modal__body">
+      <form class="production-form" id="groupForm">
+        <label class="field">
+          <span class="field__label">Producción de origen</span>
+          <select class="field__input" id="groupSource" name="groupSource" required>
+            <option value="" disabled selected>Elegir producción…</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Nombre del grupo</span>
+          <input class="field__input" type="text" id="groupName" name="groupName" placeholder="Ej: Ponedoras 2" required>
+        </label>
+
+        <div class="field-grid">
+          <label class="field">
+            <span class="field__label">Cantidad de animales</span>
+            <input class="field__input" type="number" min="1" id="groupQty" name="groupQty" required>
+          </label>
+          <label class="field">
+            <span class="field__label">Edad promedio</span>
+            <input class="field__input" type="number" min="0" id="groupAge" name="groupAge" required>
+          </label>
+          <label class="field">
+            <span class="field__label">Unidad</span>
+            <select class="field__input" id="groupAgeUnit" name="groupAgeUnit">
+              <option value="días">días</option>
+              <option value="semanas">semanas</option>
+              <option value="meses" selected>meses</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <span class="form-status" id="groupFormStatus" role="status"></span>
+          <button class="btn btn--primary" type="submit">Crear grupo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Contenedor de notificaciones -->
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

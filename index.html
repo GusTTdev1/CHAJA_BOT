@@ -91,93 +91,109 @@
 
   <!-- 1. Registrar nuevas producciones -->
   <section class="panel" id="produccion" aria-labelledby="produccion-title">
-    <header class="panel__header">
-      <div>
-        <span class="panel__eyebrow">01 · Alta</span>
-        <h2 class="panel__title" id="produccion-title">Registrar nuevas producciones</h2>
-        <p class="panel__desc">Dar de alta un lote de animales nuevo en el sistema.</p>
+    <details>
+      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+        <div>
+          <span class="panel__eyebrow">01 · Alta</span>
+          <h2 class="panel__title" id="produccion-title">Registrar nuevas producciones</h2>
+          <p class="panel__desc">Dar de alta un lote de animales nuevo en el sistema.</p>
+        </div>
+      </summary>
+
+      <div class="panel__content" style="padding-top: 1rem;">
+        <button class="cta-card" id="openProductionModal">
+          <span class="cta-card__icon" aria-hidden="true">+</span>
+          <span class="cta-card__body">
+            <span class="cta-card__title">Nueva producción</span>
+            <span class="cta-card__hint">Gallinas ponedoras · Chanchos · Pollos parrilleros</span>
+          </span>
+          <span class="cta-card__arrow" aria-hidden="true">→</span>
+        </button>
+
+        <div class="production-list" id="productionList" aria-live="polite">
+          <!-- Se completa vía JS con datos de ejemplo -->
+        </div>
       </div>
-    </header>
-
-    <button class="cta-card" id="openProductionModal">
-      <span class="cta-card__icon" aria-hidden="true">+</span>
-      <span class="cta-card__body">
-        <span class="cta-card__title">Nueva producción</span>
-        <span class="cta-card__hint">Gallinas ponedoras · Chanchos · Pollos parrilleros</span>
-      </span>
-      <span class="cta-card__arrow" aria-hidden="true">→</span>
-    </button>
-
-    <div class="production-list" id="productionList" aria-live="polite">
-      <!-- Se completa vía JS con datos de ejemplo -->
-    </div>
+    </details>
   </section>
 
   <!-- 2. Entrada y salida de stock -->
   <section class="panel" id="stock" aria-labelledby="stock-title">
-    <header class="panel__header">
-      <div>
-        <span class="panel__eyebrow">02 · Stock</span>
-        <h2 class="panel__title" id="stock-title">Entrada y salida de stock</h2>
-        <p class="panel__desc">Registrá cada movimiento de kilos y unidades producidas.</p>
-      </div>
-      <div class="segmented" id="stockDirectionToggle" role="tablist" aria-label="Tipo de movimiento">
-        <button class="segmented__btn is-active" role="tab" aria-selected="true" data-direction="entrada">Entrada</button>
-        <button class="segmented__btn" role="tab" aria-selected="false" data-direction="salida">Salida</button>
-      </div>
-    </header>
+    <details>
+      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+        <div>
+          <span class="panel__eyebrow">02 · Stock</span>
+          <h2 class="panel__title" id="stock-title">Entrada y salida de stock</h2>
+          <p class="panel__desc">Registrá cada movimiento de kilos y unidades producidas.</p>
+        </div>
+      </summary>
+      
+      <div class="panel__content" style="padding-top: 1rem;">
+        <!-- Se movió adentro para evitar que al seleccionarlos se cierre el panel -->
+        <div class="segmented" id="stockDirectionToggle" role="tablist" aria-label="Tipo de movimiento" style="margin-bottom: 1.5rem;">
+          <button class="segmented__btn is-active" role="tab" aria-selected="true" data-direction="entrada">Entrada</button>
+          <button class="segmented__btn" role="tab" aria-selected="false" data-direction="salida">Salida</button>
+        </div>
 
-    <form class="stock-form" id="stockForm">
-      <div class="field-grid">
-        <label class="field">
-          <span class="field__label">Tipo de stock</span>
-          <select class="field__input" id="stockType" name="stockType" required>
-            <option value="" disabled selected>Elegir…</option>
-            <option value="kg_pollo">Kg de pollo</option>
-            <option value="huevos">Huevos</option>
-            <option value="kg_chancho">Kg de chancho</option>
-          </select>
-        </label>
-        <label class="field">
-          <span class="field__label" id="stockQtyLabel">Cantidad</span>
-          <input class="field__input" id="stockQty" name="stockQty" type="number" min="0" step="0.1" placeholder="0" required>
-        </label>
-        <label class="field">
-          <span class="field__label">Fecha</span>
-          <input class="field__input" id="stockDate" name="stockDate" type="date" required>
-        </label>
-      </div>
-      <label class="field field--wide">
-        <span class="field__label">Nota <span class="field__optional">(opcional)</span></span>
-        <input class="field__input" id="stockNote" name="stockNote" type="text" placeholder="Ej: venta a distribuidor, pérdida por mortandad…">
-      </label>
-      <div class="form-actions">
-        <span class="form-status" id="stockFormStatus" role="status"></span>
-        <button class="btn btn--primary" type="submit">
-          <span id="stockSubmitLabel">Registrar entrada</span>
-        </button>
-      </div>
-    </form>
+        <form class="stock-form" id="stockForm">
+          <div class="field-grid">
+            <label class="field">
+              <span class="field__label">Tipo de stock</span>
+              <select class="field__input" id="stockType" name="stockType" required>
+                <option value="" disabled selected>Elegir…</option>
+                <option value="kg_pollo">Kg de pollo</option>
+                <option value="huevos">Huevos</option>
+                <option value="kg_chancho">Kg de chancho</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field__label" id="stockQtyLabel">Cantidad</span>
+              <input class="field__input" id="stockQty" name="stockQty" type="number" min="0" step="0.1" placeholder="0" required>
+            </label>
+            <label class="field">
+              <span class="field__label">Fecha</span>
+              <input class="field__input" id="stockDate" name="stockDate" type="date" required>
+            </label>
+          </div>
+          <label class="field field--wide">
+            <span class="field__label">Nota <span class="field__optional">(opcional)</span></span>
+            <input class="field__input" id="stockNote" name="stockNote" type="text" placeholder="Ej: venta a distribuidor, pérdida por mortandad…">
+          </label>
+          <div class="form-actions">
+            <span class="form-status" id="stockFormStatus" role="status"></span>
+            <button class="btn btn--primary" type="submit">
+              <span id="stockSubmitLabel">Registrar entrada</span>
+            </button>
+          </div>
+        </form>
 
-    <div class="ledger" id="stockLedger" aria-live="polite">
-      <!-- Movimientos de ejemplo cargados vía JS -->
-    </div>
+        <div class="ledger" id="stockLedger" aria-live="polite">
+          <!-- Movimientos de ejemplo cargados vía JS -->
+        </div>
+      </div>
+    </details>
   </section>
 
   <!-- 3. Grupos de producción -->
   <section class="panel" id="grupos" aria-labelledby="grupos-title">
-    <header class="panel__header">
-      <div>
-        <span class="panel__eyebrow">03 · Seguimiento</span>
-        <h2 class="panel__title" id="grupos-title">Grupos de producción</h2>
-        <p class="panel__desc">Separá animales de una producción en camadas para seguirlas de forma independiente.</p>
-      </div>
-      <button class="btn btn--outline" id="openGroupModal">+ Nuevo grupo</button>
-    </header>
+    <details>
+      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+        <div>
+          <span class="panel__eyebrow">03 · Seguimiento</span>
+          <h2 class="panel__title" id="grupos-title">Grupos de producción</h2>
+          <p class="panel__desc">Separá animales de una producción en camadas para seguirlas de forma independiente.</p>
+        </div>
+      </summary>
 
-    <div class="groups-grid" id="groupsGrid" aria-live="polite">
-      <!-- Grupos de ejemplo cargados vía JS -->
-    </div>
+      <div class="panel__content" style="padding-top: 1rem;">
+        <!-- Botón movido adentro del contenido desplegable -->
+        <button class="btn btn--outline" id="openGroupModal" style="margin-bottom: 1.5rem;">+ Nuevo grupo</button>
+
+        <div class="groups-grid" id="groupsGrid" aria-live="polite">
+          <!-- Grupos de ejemplo cargados vía JS -->
+        </div>
+      </div>
+    </details>
   </section>
 
 </main>

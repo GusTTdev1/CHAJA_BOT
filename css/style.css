@@ -928,3 +928,16 @@ main {
 @media (min-width: 641px) {
   .sidebar { box-shadow: var(--shadow-lg); }
 }
+
+
+
+/* Ocultar la flecha predeterminada de los <details> */
+details > summary::marker,
+details > summary::-webkit-details-marker {
+  display: none;
+}
+/* Opcional: darle un pequeño efecto visual cuando se despliega */
+details[open] summary {
+  border-bottom: 1px solid #eaeaea; 
+  padding-bottom: 1rem;
+}

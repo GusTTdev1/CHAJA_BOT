@@ -16,6 +16,20 @@ function simulate(fn) {
   return new Promise((resolve) => setTimeout(() => resolve(fn()), SIMULATED_LATENCY_MS));
 }
 
+export async function enviarTexto(texto) {
+  try {
+    const res = await fetch(CONFIG.api.webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ texto, nombre: getNombre() }),
+    });
+    if (!res.ok) return { ok: false, mensaje: `Error del servidor (${res.status})` };
+    return await res.json(); // se espera { ok, mensaje, grafico_url? }
+  } catch (err) {
+    return { ok: false, mensaje: "No se pudo conectar con el servidor." };
+  }
+}
+
 export const api = {
   async crearProduccion(payload) {
     // futuro: return fetch(`${CONFIG.api.baseUrl}${CONFIG.api.endpoints.producciones}`, { method: "POST", body: JSON.stringify(payload) })

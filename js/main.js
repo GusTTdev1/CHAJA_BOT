@@ -19,6 +19,7 @@ async function bootstrap() {
   initProduction();
   initStock();
   initGroups();
+  initCommandCenter();
 }
 
 bootstrap();

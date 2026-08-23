@@ -14,12 +14,13 @@ export const CONFIG = {
     redirectUri: window.location.origin,
   },
   api: {
-    // Un único webhook de n8n. NO hay un endpoint por acción: todas las
-    // solicitudes (registrar, alta, baja, balance, historial, resumen,
-    // actividad, grafico, cancelar) se envían acá mismo, con el campo
-    // "accion" dentro del body. n8n decide internamente qué hacer
-    // (ver nodo Switch sobre {{$json.body.accion}}).
-    webhookUrl: "https://n8n2.rededubot.org/webhook/chaja-web-api",
+    // Endpoint base de la futura API propia / webhooks de n8n
+    baseUrl: "https://TU_INSTANCIA_N8N.example.com/webhook",
+    endpoints: {
+      producciones: "/producciones",
+      stock: "/stock",
+      grupos: "/grupos",
+    },
   },
   productionTypes: {
     ponedoras: {

@@ -9,6 +9,16 @@
 import { CONFIG } from "./config.js";
 import { store } from "./state.js";
 
+const NOMBRE_KEY = "chaja_nombre";
+
+export function getNombre() {
+  return localStorage.getItem(NOMBRE_KEY) || "Web";
+}
+
+export function setNombre(nombre) {
+  if (nombre) localStorage.setItem(NOMBRE_KEY, nombre);
+}
+
 export async function initAuth() {
   if (!CONFIG.auth0.enabled) {
     return; // sin Auth0 configurado todavía: queda como invitado

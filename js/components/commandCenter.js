@@ -37,7 +37,7 @@ function esPasoFecha(mensaje) {
 
 let flujoActivo = false; // solo UI: hay una conversación en curso, mostrar "Cancelar"
 
-export function initCommandCenter() {
+export function init_CommandCenter() {
   const log = document.getElementById("ccLog");
   const inputArea = document.getElementById("ccInputArea");
   const menu = document.getElementById("ccMenu");

@@ -10,6 +10,7 @@ import { initUserMenu } from "./components/userMenu.js";
 import { initProduction } from "./components/production.js";
 import { initStock } from "./components/stock.js";
 import { initGroups } from "./components/groups.js";
+import { initCommandCenter } from "./components/commandCenter.js";
 
 async function bootstrap() {
   await initAuth();

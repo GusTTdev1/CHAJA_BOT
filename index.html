@@ -64,9 +64,9 @@
     <button class="icon-btn icon-btn--ghost" id="sidebarClose" aria-label="Cerrar menú">✕</button>
   </div>
   <ul class="sidebar__list">
-    <li><a class="sidebar__link is-active" href="#main">Panel general</a></li>
-    <li><a class="sidebar__link" href="#produccion">Producciones</a></li>
-    <li><a class="sidebar__link" href="#stock">Stock</a></li>
+    <li><a class="sidebar__link is-active" href="#comandos">Centro de comandos</a></li>
+    <li><a class="sidebar__link" href="#produccion">Producciones (demo)</a></li>
+    <li><a class="sidebar__link" href="#stock">Stock (demo)</a></li>
     <li><a class="sidebar__link" href="#grupos">Grupos</a></li>
     <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Estadísticas <span class="tag-soon">próximamente</span></a></li>
     <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Historial <span class="tag-soon">próximamente</span></a></li>
@@ -76,7 +76,7 @@
     <li><a class="sidebar__link" href="http://185.2.103.239/cept/">RADIO EL CHAJA</a></li>
   </ul>
   <div class="sidebar__footer">
-    <p>ChajaBot v0.1 · conectado localmente</p>
+    <p>ChajaBot v0.2 · coneccion N8N Demo</p>
   </div>
 </nav>
 
@@ -89,14 +89,52 @@
     <p class="hero__lede">Registrá producciones, seguí el stock y separá tus animales en grupos, todo desde un mismo lugar.</p>
   </section>
 
+  <!-- 0. Centro de comandos — conectado en vivo a n8n -->
+  <section class="panel" id="comandos" aria-labelledby="comandos-title">
+    <details open>
+      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+        <div>
+          <span class="panel__eyebrow">00 · En vivo</span>
+          <h2 class="panel__title" id="comandos-title">Centro de comandos</h2>
+          <p class="panel__desc">Registrar, alta, baja, balance, historial, resumen, actividad y gráficos — conectado directo a Chaja Bot.</p>
+        </div>
+      </summary>
+
+      <div class="panel__content" style="padding-top: 1rem;">
+        <label class="field" style="max-width: 320px; margin-bottom: 1.25rem;">
+          <span class="field__label">Tu nombre <span class="field__optional">(para identificarte en los registros)</span></span>
+          <input class="field__input" type="text" id="ccNombre" placeholder="Ej: Juan Pérez">
+        </label>
+
+        <div class="cc-menu" id="ccMenu">
+          <button class="btn btn--outline" data-comando="registrar">📋 Registrar</button>
+          <button class="btn btn--outline" data-comando="alta">➕ Alta</button>
+          <button class="btn btn--outline" data-comando="baja">➖ Baja</button>
+          <button class="btn btn--outline" data-comando="balance">📦 Balance</button>
+          <button class="btn btn--outline" data-comando="info">📖 Historial</button>
+          <button class="btn btn--outline" data-comando="resumen">📊 Resumen</button>
+          <button class="btn btn--outline" data-comando="/actividad">📅 Actividad</button>
+          <button class="btn btn--outline" data-comando="graficos">📈 Gráficos</button>
+          <button class="btn btn--outline" data-comando="reiniciar">🗑️ Reiniciar</button>
+        </div>
+
+        <div class="cc-chat">
+          <div class="cc-log" id="ccLog" aria-live="polite"></div>
+          <div class="cc-input-area" id="ccInputArea"></div>
+          <button class="btn btn--outline" id="ccCancel" hidden style="margin-top: .75rem;">❌ Cancelar</button>
+        </div>
+      </div>
+    </details>
+  </section>
+
   <!-- 1. Registrar nuevas producciones -->
   <section class="panel" id="produccion" aria-labelledby="produccion-title">
     <details>
       <summary class="panel__header" style="cursor: pointer; list-style: none;">
         <div>
           <span class="panel__eyebrow">01 · Alta</span>
-          <h2 class="panel__title" id="produccion-title">Registrar nuevas producciones</h2>
-          <p class="panel__desc">Dar de alta un lote de animales nuevo en el sistema.</p>
+          <h2 class="panel__title" id="produccion-title">Registrar nuevas producciones <span class="tag-soon">demo local</span></h2>
+          <p class="panel__desc">Dar de alta un lote de animales nuevo en el sistema. Para registrar de verdad en Chaja Bot, usá "Centro de comandos" arriba.</p>
         </div>
       </summary>
 
@@ -123,8 +161,8 @@
       <summary class="panel__header" style="cursor: pointer; list-style: none;">
         <div>
           <span class="panel__eyebrow">02 · Stock</span>
-          <h2 class="panel__title" id="stock-title">Entrada y salida de stock</h2>
-          <p class="panel__desc">Registrá cada movimiento de kilos y unidades producidas.</p>
+          <h2 class="panel__title" id="stock-title">Entrada y salida de stock <span class="tag-soon">demo local</span></h2>
+          <p class="panel__desc">Registrá cada movimiento de kilos y unidades producidas. Para hacerlo de verdad, usá "Alta"/"Baja" en Centro de comandos.</p>
         </div>
       </summary>
       

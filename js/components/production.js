@@ -84,17 +84,24 @@ export function initProduction() {
     status.classList.remove("is-error");
     status.textContent = "Guardando…";
 
-    try {
-      const name = nameInput.value.trim() || `${def.label} — ${new Date().toLocaleDateString("es-AR")}`;
-      await api.crearProduccion({ type: selectedType, name, qty, age });
-      showToast("Producción registrada");
-      closeModal();
-    } catch (err) {
-      status.textContent = "No se pudo guardar. Probá de nuevo.";
+    const name = nameInput.value.trim() || `${def.label} — ${new Date().toLocaleDateString("es-AR")}`;
+    const result = await api.crearProduccion({ type: selectedType, name, qty, age });
+
+    if (!result.ok) {
+      status.textContent = result.mensaje || "No se pudo guardar. Probá de nuevo.";
       status.classList.add("is-error");
-    } finally {
       submitBtn.disabled = false;
+      return;
     }
+
+    // TODO: mientras no exista la vista real de Historial/Balance (spec
+    // secciones 15-17) conectada a n8n, agregamos el registro también acá
+    // localmente para poder ver algo en la lista. El dato de verdad queda
+    // en Google Sheets vía n8n, esto es solo un espejo provisorio en UI.
+    store.addProduccion({ type: selectedType, name, qty, age });
+    showToast(result.mensaje || "Producción registrada");
+    closeModal();
+    submitBtn.disabled = false;
   });
 
   function renderList() {

@@ -65,25 +65,32 @@ export function initStock() {
     status.classList.remove("is-error");
     status.textContent = "Guardando…";
 
-    try {
-      await api.registrarMovimiento({
-        direction,
-        type,
-        qty,
-        date: dateInput.value,
-        note: noteInput.value.trim(),
-      });
-      showToast(direction === "entrada" ? "Entrada registrada" : "Salida registrada");
-      form.reset();
-      dateInput.valueAsDate = new Date();
-      qtyLabel.textContent = "Cantidad";
-      status.textContent = "";
-    } catch (err) {
-      status.textContent = "No se pudo registrar el movimiento.";
+    const payload = {
+      direction,
+      type,
+      qty,
+      date: dateInput.value,
+      note: noteInput.value.trim(),
+    };
+    const result = await api.registrarMovimiento(payload);
+
+    if (!result.ok) {
+      status.textContent = result.mensaje || "No se pudo registrar el movimiento.";
       status.classList.add("is-error");
-    } finally {
       submitBtn.disabled = false;
+      return;
     }
+
+    // TODO: igual que en production.js, esto es un espejo local provisorio
+    // hasta que "Balance" (spec sección 15) se conecte de verdad y reemplace
+    // esta lista por lo que devuelva n8n desde Google Sheets.
+    store.addMovimiento(payload);
+    showToast(result.mensaje || (direction === "entrada" ? "Entrada registrada" : "Salida registrada"));
+    form.reset();
+    dateInput.valueAsDate = new Date();
+    qtyLabel.textContent = "Cantidad";
+    status.textContent = "";
+    submitBtn.disabled = false;
   });
 
   function renderLedger() {

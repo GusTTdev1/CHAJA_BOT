@@ -941,3 +941,90 @@ details[open] summary {
   border-bottom: 1px solid #eaeaea; 
   padding-bottom: 1rem;
 }
+
+/* ==========================================================================
+   Centro de comandos — chat/wizard conectado en vivo a n8n
+   ========================================================================== */
+
+.cc-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+.cc-menu.is-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.cc-chat {
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.cc-log {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-bottom: 4px;
+}
+.cc-log:empty::before {
+  content: "Elegí una acción arriba para empezar.";
+  color: var(--ink-faint);
+  font-size: 14px;
+}
+
+.cc-bubble {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 14.5px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  box-shadow: var(--shadow-sm);
+}
+.cc-bubble--bot {
+  background: var(--surface);
+  color: var(--ink);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+.cc-bubble--user {
+  background: var(--forest);
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+.cc-bubble--error {
+  background: var(--clay-light);
+  color: var(--clay);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+.cc-bubble__img {
+  max-width: 100%;
+  border-radius: var(--radius-md);
+  align-self: flex-start;
+  box-shadow: var(--shadow-sm);
+}
+
+.cc-input-area {
+  margin-top: 12px;
+}
+.cc-input-form {
+  display: flex;
+  gap: 10px;
+}
+.cc-input-form .field__input {
+  flex: 1;
+}
+
+.cc-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

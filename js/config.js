@@ -15,7 +15,7 @@ export const CONFIG = {
   },
   api: {
     // Endpoint base de la futura API propia / webhooks de n8n
-    baseUrl: "https://n8n2.rededubot.org/webhook/chaja-web-api",
+    baseUrl: "https://TU_INSTANCIA_N8N.example.com/webhook",
     endpoints: {
       producciones: "/producciones",
       stock: "/stock",

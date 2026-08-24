@@ -9,6 +9,7 @@
 
 import { CONFIG } from "./config.js";
 import { store } from "./state.js";
+import { getNombre } from "./auth.js";
 
 const SIMULATED_LATENCY_MS = 250;
 

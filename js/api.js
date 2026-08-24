@@ -16,16 +16,30 @@ const SIMULATED_LATENCY_MS = 250;
 function simulate(fn) {
   return new Promise((resolve) => setTimeout(() => resolve(fn()), SIMULATED_LATENCY_MS));
 }
+function getUsuarioIdWeb() {
+  const KEY = "chaja_usuario_id";
+  let id = localStorage.getItem(KEY);
+  if (!id) {
+    id = "web-" + crypto.randomUUID();
+    localStorage.setItem(KEY, id);
+  }
+  return id;
+}
 
 export async function enviarTexto(texto) {
   try {
     const res = await fetch(CONFIG.api.webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ texto, nombre: getNombre() }),
+      body: JSON.stringify({
+        texto,
+        usuario_id: getUsuarioIdWeb(),
+        first_name: getNombre(),
+        origen: "web",
+      }),
     });
     if (!res.ok) return { ok: false, mensaje: `Error del servidor (${res.status})` };
-    return await res.json(); // se espera { ok, mensaje, grafico_url? }
+    return await res.json();
   } catch (err) {
     return { ok: false, mensaje: "No se pudo conectar con el servidor." };
   }

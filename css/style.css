@@ -450,6 +450,27 @@ main {
   box-shadow: var(--shadow-sm);
   scroll-margin-top: 88px;
 }
+.panel--slim { padding: 18px 28px; }
+
+/* Caja de resultado: respuesta real de Chaja Bot (balance, resumen,
+   historial, gráfico, recibo de un registro) mostrada tal cual. */
+.result-box {
+  margin-top: 18px;
+  padding: 14px 16px;
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.result-box.is-error { border-color: var(--clay); color: var(--clay); }
+.result-box__img {
+  max-width: 100%;
+  border-radius: var(--radius-sm);
+  margin-top: 10px;
+  box-shadow: var(--shadow-sm);
+}
 
 .panel__header {
   display: flex;

@@ -1,14 +1,13 @@
 // ============================================================================
-// stock.js — "Entrada y salida de stock": alterna dirección, formulario y
-// libro de movimientos (ledger).
+// stock.js — "Alta / Baja de stock": un solo formulario, un solo submit.
+// Por dentro manda la secuencia real que espera el flujo "ajuste_stock" de
+// Router de estado: [alta|baja, tipo_produccion, cantidad, observación].
 // ============================================================================
 
-import { CONFIG } from "../config.js";
-import { store } from "../state.js";
-import { api } from "../api.js";
+import { runFlow } from "../flowClient.js";
 import { showToast } from "./toast.js";
 
-let direction = "entrada";
+let direction = "alta";
 
 export function initStock() {
   const toggle = document.getElementById("stockDirectionToggle");
@@ -16,18 +15,10 @@ export function initStock() {
   const typeSelect = document.getElementById("stockType");
   const qtyInput = document.getElementById("stockQty");
   const qtyLabel = document.getElementById("stockQtyLabel");
-  const dateInput = document.getElementById("stockDate");
   const noteInput = document.getElementById("stockNote");
   const submitLabel = document.getElementById("stockSubmitLabel");
   const status = document.getElementById("stockFormStatus");
-  const ledger = document.getElementById("stockLedger");
-
-  Object.entries(CONFIG.stockTypes).forEach(([value, def]) => {
-    const opt = typeSelect.querySelector(`option[value="${value}"]`);
-    if (opt) opt.textContent = def.label;
-  });
-
-  dateInput.valueAsDate = new Date();
+  const resultBox = document.getElementById("stockResult");
 
   function setDirection(dir) {
     direction = dir;
@@ -36,7 +27,7 @@ export function initStock() {
       btn.classList.toggle("is-active", active);
       btn.setAttribute("aria-selected", String(active));
     });
-    submitLabel.textContent = dir === "entrada" ? "Registrar entrada" : "Registrar salida";
+    submitLabel.textContent = dir === "alta" ? "Registrar alta" : "Registrar baja";
   }
 
   toggle.addEventListener("click", (e) => {
@@ -44,17 +35,12 @@ export function initStock() {
     if (btn) setDirection(btn.dataset.direction);
   });
 
-  typeSelect.addEventListener("change", () => {
-    const def = CONFIG.stockTypes[typeSelect.value];
-    qtyLabel.textContent = def ? `Cantidad (${def.unit})` : "Cantidad";
-  });
-
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const type = typeSelect.value;
+    const tipo = typeSelect.value;
     const qty = Number(qtyInput.value);
 
-    if (!type || !qty || qty <= 0) {
+    if (!tipo || !qty || qty <= 0) {
       status.textContent = "Completá tipo y cantidad.";
       status.classList.add("is-error");
       return;
@@ -63,63 +49,25 @@ export function initStock() {
     const submitBtn = form.querySelector("button[type=submit]");
     submitBtn.disabled = true;
     status.classList.remove("is-error");
-    status.textContent = "Guardando…";
+    status.textContent = "Guardando en Chaja Bot…";
 
-    const payload = {
-      direction,
-      type,
-      qty,
-      date: dateInput.value,
-      note: noteInput.value.trim(),
-    };
-    const result = await api.registrarMovimiento(payload);
+    const observacion = noteInput.value.trim();
+    const res = await runFlow([direction, tipo, qty, observacion || "no"]);
 
-    if (!result.ok) {
-      status.textContent = result.mensaje || "No se pudo registrar el movimiento.";
-      status.classList.add("is-error");
-      submitBtn.disabled = false;
-      return;
-    }
-
-    // TODO: igual que en production.js, esto es un espejo local provisorio
-    // hasta que "Balance" (spec sección 15) se conecte de verdad y reemplace
-    // esta lista por lo que devuelva n8n desde Google Sheets.
-    store.addMovimiento(payload);
-    showToast(result.mensaje || (direction === "entrada" ? "Entrada registrada" : "Salida registrada"));
-    form.reset();
-    dateInput.valueAsDate = new Date();
-    qtyLabel.textContent = "Cantidad";
-    status.textContent = "";
     submitBtn.disabled = false;
+    status.textContent = "";
+
+    resultBox.hidden = false;
+    resultBox.classList.toggle("is-error", !res.ok);
+    resultBox.textContent = res.mensaje;
+
+    if (res.ok) {
+      showToast(direction === "alta" ? "Alta registrada" : "Baja registrada");
+      form.reset();
+      qtyLabel.textContent = "Cantidad";
+      setDirection("alta");
+    }
   });
 
-  function renderLedger() {
-    const { movimientos } = store.get();
-    if (!movimientos.length) {
-      ledger.innerHTML = `<p class="panel__desc">Sin movimientos todavía.</p>`;
-      return;
-    }
-    ledger.innerHTML = movimientos
-      .slice(0, 8)
-      .map((m) => {
-        const def = CONFIG.stockTypes[m.type];
-        const sign = m.direction === "entrada" ? "+" : "−";
-        const date = new Date(m.date + "T00:00:00").toLocaleDateString("es-AR", { day: "2-digit", month: "short" });
-        return `
-          <div class="ledger__row ledger__row--${m.direction}">
-            <span class="ledger__dot"></span>
-            <span>
-              <span class="ledger__label">${def?.label ?? m.type}</span>
-              ${m.note ? `<span class="ledger__note">${m.note}</span>` : ""}
-            </span>
-            <span class="ledger__amount">${sign}${m.qty} ${def?.unit ?? ""}</span>
-            <span class="ledger__date">${date}</span>
-          </div>`;
-      })
-      .join("");
-  }
-
-  store.subscribe(renderLedger);
-  setDirection("entrada");
-  renderLedger();
+  setDirection("alta");
 }

@@ -21,28 +21,10 @@ export const CONFIG = {
     // (ver nodo Switch sobre {{$json.body.accion}}).
     webhookUrl: "https://n8n2.rededubot.org/webhook/chaja-web-api",
   },
-  productionTypes: {
-    ponedoras: {
-      label: "Gallinas ponedoras",
-      icon: "🥚",
-      fields: ["qty"],
-    },
-    chanchos: {
-      label: "Chanchos",
-      icon: "🐖",
-      fields: ["qty"],
-    },
-    parrilleros: {
-      label: "Pollos parrilleros",
-      icon: "🐔",
-      fields: ["qty", "age"],
-    },
-    // Para agregar un nuevo tipo de producción en el futuro, alcanza con
-    // sumar una entrada acá: la UI (modal, formulario, ícono) se genera sola.
-  },
-  stockTypes: {
-    kg_pollo: { label: "Kg de pollo", unit: "kg" },
-    huevos: { label: "Huevos", unit: "u." },
-    kg_chancho: { label: "Kg de chancho", unit: "kg" },
-  },
+  // Los tipos de producción (gallinas/pollos/cerdos/huerta) y los eventos de
+  // cerdos (produccion/celo/parto/destete/sanidad) están hardcodeados en
+  // production.js y en el HTML del modal, en vez de vivir acá: tienen que
+  // calzar carácter por carácter con lo que valida "Router de estado" en
+  // n8n, así que agregar uno nuevo requiere tocar los dos lados a la vez
+  // (el flujo de n8n y este formulario).
 };

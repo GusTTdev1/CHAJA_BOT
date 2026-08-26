@@ -64,9 +64,11 @@
     <button class="icon-btn icon-btn--ghost" id="sidebarClose" aria-label="Cerrar menú">✕</button>
   </div>
   <ul class="sidebar__list">
-    <li><a class="sidebar__link is-active" href="#comandos">Centro de comandos</a></li>
-    <li><a class="sidebar__link" href="#produccion">Producciones (demo)</a></li>
-    <li><a class="sidebar__link" href="#stock">Stock (demo)</a></li>
+    <li><a class="sidebar__link is-active" href="#produccion">Registrar producción</a></li>
+    <li><a class="sidebar__link" href="#stock">Alta / Baja de stock</a></li>
+    <li><a class="sidebar__link" href="#consultas">Balance y resúmenes</a></li>
+    <li><a class="sidebar__link" href="#actividad">Actividad por fecha</a></li>
+    <li><a class="sidebar__link" href="#graficos">Gráficos</a></li>
     <li><a class="sidebar__link" href="#grupos">Grupos</a></li>
     <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Estadísticas <span class="tag-soon">próximamente</span></a></li>
     <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Historial <span class="tag-soon">próximamente</span></a></li>
@@ -76,7 +78,7 @@
     <li><a class="sidebar__link" href="http://185.2.103.239/cept/">RADIO EL CHAJA</a></li>
   </ul>
   <div class="sidebar__footer">
-    <p>ChajaBot v0.1 · conectado localmente</p>
+    <p>ChajaBot v0.3 · conectado a N8N</p>
   </div>
 </nav>
 
@@ -89,52 +91,23 @@
     <p class="hero__lede">Registrá producciones, seguí el stock y separá tus animales en grupos, todo desde un mismo lugar.</p>
   </section>
 
-  <!-- 0. Centro de comandos — conectado en vivo a n8n -->
-  <section class="panel" id="comandos" aria-labelledby="comandos-title">
+  <!-- Identidad: se usa como "agente" en cada registro que se manda a Chaja Bot -->
+  <section class="panel panel--slim" id="identidad" aria-labelledby="identidad-title">
+    <h2 class="panel__title" id="identidad-title" style="font-size:16px; margin:0 0 10px;">Tu nombre</h2>
+    <label class="field" style="max-width: 320px; margin-bottom: 0;">
+      <span class="field__label">Para identificarte en los registros</span>
+      <input class="field__input" type="text" id="agenteNombre" placeholder="Ej: Juan Pérez">
+    </label>
+  </section>
+
+  <!-- 1. Registrar nuevas producciones — conectado en vivo a Chaja Bot -->
+  <section class="panel" id="produccion" aria-labelledby="produccion-title">
     <details open>
       <summary class="panel__header" style="cursor: pointer; list-style: none;">
         <div>
-          <span class="panel__eyebrow">00 · En vivo</span>
-          <h2 class="panel__title" id="comandos-title">Centro de comandos</h2>
-          <p class="panel__desc">Registrar, alta, baja, balance, historial, resumen, actividad y gráficos — conectado directo a Chaja Bot.</p>
-        </div>
-      </summary>
-
-      <div class="panel__content" style="padding-top: 1rem;">
-        <label class="field" style="max-width: 320px; margin-bottom: 1.25rem;">
-          <span class="field__label">Tu nombre <span class="field__optional">(para identificarte en los registros)</span></span>
-          <input class="field__input" type="text" id="ccNombre" placeholder="Ej: Juan Pérez">
-        </label>
-
-        <div class="cc-menu" id="ccMenu">
-          <button class="btn btn--outline" data-comando="registrar">📋 Registrar</button>
-          <button class="btn btn--outline" data-comando="alta">➕ Alta</button>
-          <button class="btn btn--outline" data-comando="baja">➖ Baja</button>
-          <button class="btn btn--outline" data-comando="balance">📦 Balance</button>
-          <button class="btn btn--outline" data-comando="info">📖 Historial</button>
-          <button class="btn btn--outline" data-comando="resumen">📊 Resumen</button>
-          <button class="btn btn--outline" data-comando="/actividad">📅 Actividad</button>
-          <button class="btn btn--outline" data-comando="graficos">📈 Gráficos</button>
-          <button class="btn btn--outline" data-comando="reiniciar">🗑️ Reiniciar</button>
-        </div>
-
-        <div class="cc-chat">
-          <div class="cc-log" id="ccLog" aria-live="polite"></div>
-          <div class="cc-input-area" id="ccInputArea"></div>
-          <button class="btn btn--outline" id="ccCancel" hidden style="margin-top: .75rem;">❌ Cancelar</button>
-        </div>
-      </div>
-    </details>
-  </section>
-
-  <!-- 1. Registrar nuevas producciones -->
-  <section class="panel" id="produccion" aria-labelledby="produccion-title">
-    <details>
-      <summary class="panel__header" style="cursor: pointer; list-style: none;">
-        <div>
-          <span class="panel__eyebrow">01 · Alta</span>
-          <h2 class="panel__title" id="produccion-title">Registrar nuevas producciones <span class="tag-soon">demo local</span></h2>
-          <p class="panel__desc">Dar de alta un lote de animales nuevo en el sistema. Para registrar de verdad en Chaja Bot, usá "Centro de comandos" arriba.</p>
+          <span class="panel__eyebrow">01 · En vivo</span>
+          <h2 class="panel__title" id="produccion-title">Registrar producción</h2>
+          <p class="panel__desc">Cargá producción, sanidad, celo, parto o destete. Se guarda directo en el cuaderno de Chaja Bot.</p>
         </div>
       </summary>
 
@@ -142,55 +115,50 @@
         <button class="cta-card" id="openProductionModal">
           <span class="cta-card__icon" aria-hidden="true">+</span>
           <span class="cta-card__body">
-            <span class="cta-card__title">Nueva producción</span>
-            <span class="cta-card__hint">Gallinas ponedoras · Chanchos · Pollos parrilleros</span>
+            <span class="cta-card__title">Nuevo registro</span>
+            <span class="cta-card__hint">Gallinas · Pollos · Cerdos · Huerta</span>
           </span>
           <span class="cta-card__arrow" aria-hidden="true">→</span>
         </button>
 
-        <div class="production-list" id="productionList" aria-live="polite">
-          <!-- Se completa vía JS con datos de ejemplo -->
-        </div>
+        <div class="result-box" id="productionResult" aria-live="polite" hidden></div>
       </div>
     </details>
   </section>
 
-  <!-- 2. Entrada y salida de stock -->
+  <!-- 2. Alta / Baja de stock — conectado en vivo a Chaja Bot -->
   <section class="panel" id="stock" aria-labelledby="stock-title">
     <details>
       <summary class="panel__header" style="cursor: pointer; list-style: none;">
         <div>
-          <span class="panel__eyebrow">02 · Stock</span>
-          <h2 class="panel__title" id="stock-title">Entrada y salida de stock <span class="tag-soon">demo local</span></h2>
-          <p class="panel__desc">Registrá cada movimiento de kilos y unidades producidas. Para hacerlo de verdad, usá "Alta"/"Baja" en Centro de comandos.</p>
+          <span class="panel__eyebrow">02 · En vivo</span>
+          <h2 class="panel__title" id="stock-title">Alta / Baja de stock</h2>
+          <p class="panel__desc">Ajuste manual de existencias (ej: mortandad, compra o venta puntual). Se guarda directo en el cuaderno de Chaja Bot.</p>
         </div>
       </summary>
-      
+
       <div class="panel__content" style="padding-top: 1rem;">
         <!-- Se movió adentro para evitar que al seleccionarlos se cierre el panel -->
         <div class="segmented" id="stockDirectionToggle" role="tablist" aria-label="Tipo de movimiento" style="margin-bottom: 1.5rem;">
-          <button class="segmented__btn is-active" role="tab" aria-selected="true" data-direction="entrada">Entrada</button>
-          <button class="segmented__btn" role="tab" aria-selected="false" data-direction="salida">Salida</button>
+          <button class="segmented__btn is-active" role="tab" aria-selected="true" data-direction="alta">Alta</button>
+          <button class="segmented__btn" role="tab" aria-selected="false" data-direction="baja">Baja</button>
         </div>
 
         <form class="stock-form" id="stockForm">
           <div class="field-grid">
             <label class="field">
-              <span class="field__label">Tipo de stock</span>
+              <span class="field__label">Tipo de producción</span>
               <select class="field__input" id="stockType" name="stockType" required>
                 <option value="" disabled selected>Elegir…</option>
-                <option value="kg_pollo">Kg de pollo</option>
-                <option value="huevos">Huevos</option>
-                <option value="kg_chancho">Kg de chancho</option>
+                <option value="gallinas">Gallinas</option>
+                <option value="pollos">Pollos</option>
+                <option value="cerdos">Cerdos</option>
+                <option value="huerta">Huerta</option>
               </select>
             </label>
             <label class="field">
               <span class="field__label" id="stockQtyLabel">Cantidad</span>
-              <input class="field__input" id="stockQty" name="stockQty" type="number" min="0" step="0.1" placeholder="0" required>
-            </label>
-            <label class="field">
-              <span class="field__label">Fecha</span>
-              <input class="field__input" id="stockDate" name="stockDate" type="date" required>
+              <input class="field__input" id="stockQty" name="stockQty" type="number" min="0" step="1" placeholder="0" required>
             </label>
           </div>
           <label class="field field--wide">
@@ -200,14 +168,101 @@
           <div class="form-actions">
             <span class="form-status" id="stockFormStatus" role="status"></span>
             <button class="btn btn--primary" type="submit">
-              <span id="stockSubmitLabel">Registrar entrada</span>
+              <span id="stockSubmitLabel">Registrar alta</span>
             </button>
           </div>
         </form>
 
-        <div class="ledger" id="stockLedger" aria-live="polite">
-          <!-- Movimientos de ejemplo cargados vía JS -->
+        <div class="result-box" id="stockResult" aria-live="polite" hidden></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- 3. Balance / Resumen / Historial — conectado en vivo a Chaja Bot -->
+  <section class="panel" id="consultas" aria-labelledby="consultas-title">
+    <details>
+      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+        <div>
+          <span class="panel__eyebrow">03 · En vivo</span>
+          <h2 class="panel__title" id="consultas-title">Balance y resúmenes</h2>
+          <p class="panel__desc">Consultá el estado del cuaderno: balance financiero, resumen de producción o historial completo.</p>
         </div>
+      </summary>
+
+      <div class="panel__content" style="padding-top: 1rem;">
+        <div class="cc-menu">
+          <button class="btn btn--outline" data-consulta="balance">💰 Balance financiero</button>
+          <button class="btn btn--outline" data-consulta="resumen">📊 Resumen de producción</button>
+          <button class="btn btn--outline" data-consulta="info">📖 Historial completo</button>
+        </div>
+        <div class="result-box" id="consultasResult" aria-live="polite" hidden></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- 4. Actividad por fecha — conectado en vivo a Chaja Bot -->
+  <section class="panel" id="actividad" aria-labelledby="actividad-title">
+    <details>
+      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+        <div>
+          <span class="panel__eyebrow">04 · En vivo</span>
+          <h2 class="panel__title" id="actividad-title">Actividad por fecha</h2>
+          <p class="panel__desc">Mirá qué se registró un día puntual.</p>
+        </div>
+      </summary>
+
+      <div class="panel__content" style="padding-top: 1rem;">
+        <form class="stock-form" id="actividadForm">
+          <label class="field" style="max-width: 220px;">
+            <span class="field__label">Fecha</span>
+            <input class="field__input" type="date" id="actividadFecha" required>
+          </label>
+          <div class="form-actions">
+            <span class="form-status" id="actividadFormStatus" role="status"></span>
+            <button class="btn btn--primary" type="submit">Consultar</button>
+          </div>
+        </form>
+        <div class="result-box" id="actividadResult" aria-live="polite" hidden></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- 5. Gráficos — conectado en vivo a Chaja Bot -->
+  <section class="panel" id="graficos" aria-labelledby="graficos-title">
+    <details>
+      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+        <div>
+          <span class="panel__eyebrow">05 · En vivo</span>
+          <h2 class="panel__title" id="graficos-title">Gráficos</h2>
+          <p class="panel__desc">Generá un gráfico de producción o de economía a partir de tus registros.</p>
+        </div>
+      </summary>
+
+      <div class="panel__content" style="padding-top: 1rem;">
+        <form class="stock-form" id="graficosForm">
+          <div class="field-grid">
+            <label class="field">
+              <span class="field__label">Categoría</span>
+              <select class="field__input" id="graficoCategoria">
+                <option value="produccion">Producción</option>
+                <option value="economia">Economía</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field__label">Tipo de gráfico</span>
+              <select class="field__input" id="graficoTipo">
+                <option value="barras">Barras</option>
+                <option value="torta">Torta</option>
+                <option value="linea">Línea</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-actions">
+            <span class="form-status" id="graficosFormStatus" role="status"></span>
+            <button class="btn btn--primary" type="submit">Generar gráfico</button>
+          </div>
+        </form>
+        <div class="result-box" id="graficosResult" aria-live="polite" hidden></div>
       </div>
     </details>
   </section>
@@ -217,9 +272,9 @@
     <details>
       <summary class="panel__header" style="cursor: pointer; list-style: none;">
         <div>
-          <span class="panel__eyebrow">03 · Seguimiento</span>
-          <h2 class="panel__title" id="grupos-title">Grupos de producción</h2>
-          <p class="panel__desc">Separá animales de una producción en camadas para seguirlas de forma independiente.</p>
+          <span class="panel__eyebrow">06 · Local</span>
+          <h2 class="panel__title" id="grupos-title">Grupos de producción <span class="tag-soon">demo local</span></h2>
+          <p class="panel__desc">Separá animales de una producción en camadas para seguirlas de forma independiente. Todavía no tiene una acción equivalente en Chaja Bot, así que por ahora vive solo en este navegador.</p>
         </div>
       </summary>
 
@@ -237,57 +292,134 @@
 </main>
 
 <footer class="site-footer">
-  <p>ChajaBot — gestión agropecuaria. Datos de ejemplo, listo para conectar a Auth0, n8n y una API propia.</p>
+  <p>ChajaBot — gestión agropecuaria. Registro, stock, balance, actividad y gráficos conectados en vivo. Grupos, todavía local. Listo para conectar Auth0.</p>
 </footer>
 
-<!-- ============ MODAL: NUEVA PRODUCCIÓN ============ -->
+<!-- ============ MODAL: REGISTRAR PRODUCCIÓN (real, wizard interno) ============ -->
 <div class="modal-scrim" id="productionModalScrim" hidden>
   <div class="modal" id="productionModal" role="dialog" aria-modal="true" aria-labelledby="productionModalTitle">
     <header class="modal__header">
-      <h3 class="modal__title" id="productionModalTitle">Nueva producción</h3>
+      <h3 class="modal__title" id="productionModalTitle">Nuevo registro</h3>
       <button class="icon-btn icon-btn--ghost" id="productionModalClose" aria-label="Cerrar">✕</button>
     </header>
 
     <div class="modal__body">
-      <p class="modal__step-label" id="productionStepLabel">Paso 1 — Elegí el tipo</p>
+      <p class="modal__step-label" id="productionStepLabel">Paso 1 — Elegí el área</p>
 
-      <div class="type-select" id="productionTypeSelect">
-        <button class="type-card" data-type="ponedoras">
+      <!-- Paso 1: tipo -->
+      <div class="type-select" data-step="tipo">
+        <button class="type-card" type="button" data-tipo="gallinas">
           <span class="type-card__icon" aria-hidden="true">🥚</span>
-          <span class="type-card__label">Gallinas ponedoras</span>
+          <span class="type-card__label">Gallinas</span>
         </button>
-        <button class="type-card" data-type="chanchos">
-          <span class="type-card__icon" aria-hidden="true">🐖</span>
-          <span class="type-card__label">Chanchos</span>
-        </button>
-        <button class="type-card" data-type="parrilleros">
+        <button class="type-card" type="button" data-tipo="pollos">
           <span class="type-card__icon" aria-hidden="true">🐔</span>
-          <span class="type-card__label">Pollos parrilleros</span>
+          <span class="type-card__label">Pollos</span>
+        </button>
+        <button class="type-card" type="button" data-tipo="cerdos">
+          <span class="type-card__icon" aria-hidden="true">🐖</span>
+          <span class="type-card__label">Cerdos</span>
+        </button>
+        <button class="type-card" type="button" data-tipo="huerta">
+          <span class="type-card__icon" aria-hidden="true">🥬</span>
+          <span class="type-card__label">Huerta</span>
         </button>
       </div>
 
+      <!-- Paso 2 (solo cerdos): evento -->
+      <div class="type-select" data-step="evento" hidden>
+        <button type="button" class="back-link" data-back="tipo">← Elegir otra área</button>
+        <button class="type-card" type="button" data-evento="produccion">
+          <span class="type-card__icon" aria-hidden="true">🏭</span>
+          <span class="type-card__label">Producción</span>
+        </button>
+        <button class="type-card" type="button" data-evento="celo">
+          <span class="type-card__icon" aria-hidden="true">❤️</span>
+          <span class="type-card__label">Celo</span>
+        </button>
+        <button class="type-card" type="button" data-evento="parto">
+          <span class="type-card__icon" aria-hidden="true">🍼</span>
+          <span class="type-card__label">Parto</span>
+        </button>
+        <button class="type-card" type="button" data-evento="destete">
+          <span class="type-card__icon" aria-hidden="true">🐖</span>
+          <span class="type-card__label">Destete</span>
+        </button>
+        <button class="type-card" type="button" data-evento="sanidad">
+          <span class="type-card__icon" aria-hidden="true">💉</span>
+          <span class="type-card__label">Sanidad</span>
+        </button>
+      </div>
+
+      <!-- Paso 3: formulario final, campos dinámicos según tipo/evento -->
       <form class="production-form" id="productionForm" hidden>
-        <button type="button" class="back-link" id="productionBack">← Elegir otro tipo</button>
+        <button type="button" class="back-link" id="productionBack">← Volver</button>
         <p class="production-form__type" id="productionFormType"></p>
 
-        <label class="field">
-          <span class="field__label">Cantidad total de animales</span>
-          <input class="field__input" type="number" min="1" id="productionQty" name="productionQty" required>
-        </label>
+        <!-- rama estándar: produccion diaria (gallinas/pollos/huerta/cerdos-produccion) -->
+        <div id="campoEstandar" hidden>
+          <label class="field">
+            <span class="field__label" id="campoCantidadLabel">Cantidad de animales</span>
+            <input class="field__input" type="number" min="1" id="campoCantidad">
+          </label>
+          <label class="field">
+            <span class="field__label">Alimento consumido hoy (kg)</span>
+            <input class="field__input" type="number" min="0" step="0.01" id="campoAlimentoKg">
+          </label>
+          <label class="field">
+            <span class="field__label">Costo por kilo de ese alimento</span>
+            <input class="field__input" type="number" min="0" step="0.01" id="campoPrecioAlimento">
+          </label>
+          <label class="field">
+            <span class="field__label" id="campoProduccionLabel">Producción de hoy</span>
+            <input class="field__input" type="number" min="0" step="0.01" id="campoProduccion">
+          </label>
+        </div>
 
-        <label class="field" id="productionAgeField" hidden>
-          <span class="field__label">Edad de los animales (semanas)</span>
-          <input class="field__input" type="number" min="0" id="productionAge" name="productionAge">
-        </label>
+        <!-- rama: celo -->
+        <div id="campoCelo" hidden>
+          <label class="field">
+            <span class="field__label">Nombre o número de la cerda madre en celo</span>
+            <input class="field__input" type="text" id="campoCerda">
+          </label>
+        </div>
 
-        <label class="field">
-          <span class="field__label">Nombre de la producción <span class="field__optional">(opcional)</span></span>
-          <input class="field__input" type="text" id="productionName" name="productionName" placeholder="Se genera uno automáticamente si lo dejás vacío">
+        <!-- rama: parto -->
+        <div id="campoParto" hidden>
+          <label class="field">
+            <span class="field__label">Lechones nacidos vivos</span>
+            <input class="field__input" type="number" min="0" id="campoLechonesVivos">
+          </label>
+        </div>
+
+        <!-- rama: destete -->
+        <div id="campoDestete" hidden>
+          <label class="field">
+            <span class="field__label">Cantidad de lechones a destetar</span>
+            <input class="field__input" type="number" min="1" id="campoLechonesDestete">
+          </label>
+        </div>
+
+        <!-- rama: sanidad -->
+        <div id="campoSanidad" hidden>
+          <label class="field">
+            <span class="field__label">Tratamiento aplicado</span>
+            <input class="field__input" type="text" id="campoTratamiento" placeholder="Ej: Vacuna parvovirus, Vitaminas">
+          </label>
+          <label class="field">
+            <span class="field__label">Costo total del tratamiento</span>
+            <input class="field__input" type="number" min="0" step="0.01" id="campoCostoSanidad">
+          </label>
+        </div>
+
+        <label class="field field--wide">
+          <span class="field__label">Observación / tarea pendiente <span class="field__optional">(opcional)</span></span>
+          <input class="field__input" type="text" id="productionObservacion" placeholder="Dejalo vacío si no hay nada">
         </label>
 
         <div class="form-actions">
           <span class="form-status" id="productionFormStatus" role="status"></span>
-          <button class="btn btn--primary" type="submit">Guardar producción</button>
+          <button class="btn btn--primary" type="submit">Guardar registro</button>
         </div>
       </form>
     </div>

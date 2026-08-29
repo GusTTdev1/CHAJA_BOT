@@ -7,15 +7,15 @@
 
 export const CONFIG = {
   auth0: {
-    enabled: false, // pasar a true cuando exista una app Auth0 real
-    domain: "TU_DOMINIO.auth0.com",
-    clientId: "TU_CLIENT_ID",
+    enabled: true,
+    domain: "dev-58lqnyqsc68mdqad.us.auth0.com",
+    clientId: "hhKo6w02G8NCE6acMyNM5H86D5WtiXbf",
     // Sólo hace falta si en Auth0 se configuró un "API identifier" (audience)
     // para pedir un access token con permisos específicos. Si no existe,
     // dejar vacío: igual se obtiene un id_token válido con el `sub` del
     // usuario, que es lo único que necesitamos acá.
     audience: "",
-    redirectUri: window.location.origin,
+    redirectUri: "https://gusttdev1.github.io/CHAJA_BOT/",
     // Scopes mínimos para leer nombre, email y el claim "sub" (el que se usa
     // como usuario_id permanente). No hace falta pedir nada más.
     scope: "openid profile email",

@@ -125,6 +125,12 @@ export async function login() {
     });
     return;
   }
+  if (!auth0Client) {
+    throw new Error(
+      "auth0Client no se inicializó (initAuth() falló o no corrió). " +
+        "Revisá el error anterior en la consola."
+    );
+  }
   await auth0Client.loginWithRedirect();
 }
 

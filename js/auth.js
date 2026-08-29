@@ -59,7 +59,7 @@ export async function initAuth() {
   if (!CONFIG.auth0.enabled) {
     return; // sin Auth0 configurado todavía: queda como invitado
   }
-  if (typeof createAuth0Client !== "function") {
+  if (!window.auth0 || typeof window.auth0.createAuth0Client !== "function") {
     console.error(
       "[auth] El Auth0 SPA SDK no está cargado. Falta el <script> de " +
         "cdn.auth0.com en index.html (ver comentario junto a js/main.js)."
@@ -67,7 +67,7 @@ export async function initAuth() {
     return;
   }
 
-  auth0Client = await createAuth0Client({
+  auth0Client = await window.auth0.createAuth0Client({
     domain: CONFIG.auth0.domain,
     clientId: CONFIG.auth0.clientId,
     authorizationParams: {

@@ -7,6 +7,7 @@
 import { initAuth } from "./auth.js";
 import { initSidebar } from "./components/sidebar.js";
 import { initUserMenu } from "./components/userMenu.js";
+import { initOnboarding } from "./components/onboarding.js";
 import { initIdentidad } from "./components/identidad.js";
 import { initProduction } from "./components/production.js";
 import { initStock } from "./components/stock.js";
@@ -19,6 +20,7 @@ async function bootstrap() {
   await initAuth();
   initSidebar();
   initUserMenu();
+  initOnboarding(); // alta automática la primera vez que hay sesión sin familia
   initIdentidad();
   initProduction();
   initStock();

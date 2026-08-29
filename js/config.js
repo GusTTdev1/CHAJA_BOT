@@ -10,8 +10,26 @@ export const CONFIG = {
     enabled: false, // pasar a true cuando exista una app Auth0 real
     domain: "TU_DOMINIO.auth0.com",
     clientId: "TU_CLIENT_ID",
+    // Sólo hace falta si en Auth0 se configuró un "API identifier" (audience)
+    // para pedir un access token con permisos específicos. Si no existe,
+    // dejar vacío: igual se obtiene un id_token válido con el `sub` del
+    // usuario, que es lo único que necesitamos acá.
     audience: "",
     redirectUri: window.location.origin,
+    // Scopes mínimos para leer nombre, email y el claim "sub" (el que se usa
+    // como usuario_id permanente). No hace falta pedir nada más.
+    scope: "openid profile email",
+    // Los proveedores sociales (Google, Facebook, y los que se sumen) NO se
+    // eligen desde acá: se habilitan en el dashboard de Auth0
+    // (Authentication > Social) y Auth0 los muestra automáticamente como
+    // botones en su Universal Login. Este archivo no necesita saber cuáles
+    // están activos.
+    //
+    // Importante para que "el mismo usuario" no termine con dos `sub`
+    // distintos: si alguien entra primero con Google y después con Facebook
+    // usando el mismo email verificado, conviene tener activada en Auth0 la
+    // vinculación automática por email (Auth0 Action/Rule de account
+    // linking). Ver diagnóstico, punto 1.
   },
   api: {
     // Un único webhook de n8n. NO hay un endpoint por acción: todas las

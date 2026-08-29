@@ -27,6 +27,7 @@ const state = {
   ],
   user: {
     isAuthenticated: false,
+    usuarioId: null, // sub de Auth0 (o UUID de invitado) — ver auth.js
     name: null,
     email: null,
   },

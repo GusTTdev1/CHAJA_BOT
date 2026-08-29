@@ -36,14 +36,24 @@ export function initUserMenu() {
   });
 
   loginBtn.addEventListener("click", async () => {
-    await login();
-    showToast("Sesión iniciada");
-    close();
+    try {
+      await login();
+      showToast("Sesión iniciada");
+      close();
+    } catch (err) {
+      console.error("[login] Falló el inicio de sesión:", err);
+      showToast("No se pudo iniciar sesión. Revisá la consola para más detalle.");
+    }
   });
   logoutBtn.addEventListener("click", async () => {
-    await logout();
-    showToast("Sesión cerrada");
-    close();
+    try {
+      await logout();
+      showToast("Sesión cerrada");
+      close();
+    } catch (err) {
+      console.error("[logout] Falló el cierre de sesión:", err);
+      showToast("No se pudo cerrar sesión. Revisá la consola para más detalle.");
+    }
   });
 
   function render() {

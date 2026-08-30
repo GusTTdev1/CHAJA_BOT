@@ -64,14 +64,10 @@ export async function enviarTexto(texto) {
     return { ok: false, mensaje: `Error del servidor (${res.status})` };
   }
 
+    const crudo = await res.text();
   try {
-    return await res.json();
+    return JSON.parse(crudo);
   } catch (err) {
-    // El request llegó y volvió con 200, pero el cuerpo no es JSON válido
-    // (ej. el nodo "Respond to Webhook" de n8n no está devolviendo JSON,
-    // o devuelve vacío). Antes esto también caía en "no se pudo conectar",
-    // que era engañoso: la conexión funcionó, el problema es el formato.
-    const crudo = await res.clone().text().catch(() => "(no se pudo leer)");
     console.error("[api] enviarTexto(): la respuesta no es JSON válido:", err, "\nCuerpo crudo:", crudo);
     return { ok: false, mensaje: "El servidor respondió en un formato inesperado." };
   }

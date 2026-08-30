@@ -916,6 +916,77 @@ main {
 }
 
 /* ==========================================================================
+   Pantalla de login obligatorio (5.3)
+   ========================================================================== */
+
+.auth-gate {
+  min-height: calc(100vh - var(--topbar-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px 80px;
+}
+.auth-gate__card {
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 40px 32px;
+}
+.auth-gate__logo {
+  border-radius: var(--radius-md);
+  margin: 0 auto 16px;
+}
+.auth-gate__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--moss);
+  margin: 0 0 10px;
+}
+.auth-gate__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(28px, 6vw, 36px);
+  line-height: 1.1;
+  margin: 0 0 12px;
+  color: var(--forest-dark);
+}
+.auth-gate__title em {
+  font-style: italic;
+  color: var(--moss);
+}
+.auth-gate__lede {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0 0 24px;
+}
+.auth-gate .btn {
+  width: 100%;
+}
+.auth-gate__foot {
+  font-size: 12.5px;
+  color: var(--ink-faint);
+  margin: 20px 0 0;
+  line-height: 1.5;
+}
+.auth-gate__foot a {
+  color: var(--moss);
+  text-decoration: underline;
+}
+
+/* Sidebar bloqueado: sólo los links externos quedan visibles sin sesión */
+.sidebar__list--locked .sidebar__link--app { display: none; }
+.sidebar__hint {
+  font-size: 13px;
+  color: var(--ink-faint);
+  padding: 10px 14px;
+}
+
+/* ==========================================================================
    Pie de página
    ========================================================================== */
 

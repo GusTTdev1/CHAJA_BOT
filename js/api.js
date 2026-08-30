@@ -32,8 +32,15 @@ export async function enviarTexto(texto) {
     return { ok: false, mensaje: "Iniciá sesión para poder registrar datos." };
   }
 
+  // OJO: antes esto envolvía fetch() Y res.json() en el mismo try/catch,
+  // así que un fallo de red y una respuesta que no era JSON válido daban
+  // exactamente el mismo mensaje ("No se pudo conectar con el servidor"),
+  // sin loguear nada en consola. Separado en dos try/catch + console.error
+  // en cada uno para poder distinguir la causa real la próxima vez que
+  // pase esto.
+  let res;
   try {
-    const res = await fetch(CONFIG.api.webhookUrl, {
+    res = await fetch(CONFIG.api.webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -43,10 +50,30 @@ export async function enviarTexto(texto) {
         origen: "web",
       }),
     });
-    if (!res.ok) return { ok: false, mensaje: `Error del servidor (${res.status})` };
+  } catch (err) {
+    // Esto es lo que tira un fetch que ni siquiera pudo completar: CORS
+    // bloqueado por el navegador, DNS, timeout, sin conexión, etc. El
+    // navegador ya debería haber logueado el detalle (ej. el aviso de
+    // CORS) arriba de esta línea en la consola.
+    console.error("[api] enviarTexto(): fetch al webhook de n8n falló:", err);
+    return { ok: false, mensaje: "No se pudo conectar con el servidor." };
+  }
+
+  if (!res.ok) {
+    console.error(`[api] enviarTexto(): el webhook respondió con status ${res.status}`);
+    return { ok: false, mensaje: `Error del servidor (${res.status})` };
+  }
+
+  try {
     return await res.json();
   } catch (err) {
-    return { ok: false, mensaje: "No se pudo conectar con el servidor." };
+    // El request llegó y volvió con 200, pero el cuerpo no es JSON válido
+    // (ej. el nodo "Respond to Webhook" de n8n no está devolviendo JSON,
+    // o devuelve vacío). Antes esto también caía en "no se pudo conectar",
+    // que era engañoso: la conexión funcionó, el problema es el formato.
+    const crudo = await res.clone().text().catch(() => "(no se pudo leer)");
+    console.error("[api] enviarTexto(): la respuesta no es JSON válido:", err, "\nCuerpo crudo:", crudo);
+    return { ok: false, mensaje: "El servidor respondió en un formato inesperado." };
   }
 }
 

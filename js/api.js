@@ -64,7 +64,7 @@ export async function enviarTexto(texto) {
     return { ok: false, mensaje: `Error del servidor (${res.status})` };
   }
 
-    const crudo = await res.text();
+  const crudo = await res.text();
   try {
     return JSON.parse(crudo);
   } catch (err) {

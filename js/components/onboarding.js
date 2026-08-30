@@ -62,7 +62,7 @@ async function chequear(state) {
   enCurso = true;
   try {
     const resp = await runComando("info");
-    const sinFamilia = !resp.ok && SIN_FAMILIA.test(resp.mensaje || "");
+    const sinFamilia = SIN_FAMILIA.test(resp.mensaje || "");
 
     if (sinFamilia) {
       await altaAutomatica(user);

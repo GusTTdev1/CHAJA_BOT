@@ -63,17 +63,18 @@
     <span class="sidebar__eyebrow">Menú</span>
     <button class="icon-btn icon-btn--ghost" id="sidebarClose" aria-label="Cerrar menú">✕</button>
   </div>
-  <ul class="sidebar__list">
-    <li><a class="sidebar__link is-active" href="#produccion">Registrar producción</a></li>
-    <li><a class="sidebar__link" href="#stock">Alta / Baja de stock</a></li>
-    <li><a class="sidebar__link" href="#consultas">Balance y resúmenes</a></li>
-    <li><a class="sidebar__link" href="#actividad">Actividad por fecha</a></li>
-    <li><a class="sidebar__link" href="#graficos">Gráficos</a></li>
-    <li><a class="sidebar__link" href="#grupos">Grupos</a></li>
-    <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Estadísticas <span class="tag-soon">próximamente</span></a></li>
-    <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Historial <span class="tag-soon">próximamente</span></a></li>
-    <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Usuarios y permisos <span class="tag-soon">próximamente</span></a></li>
-    <li><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Configuración <span class="tag-soon">próximamente</span></a></li>
+  <ul class="sidebar__list" id="sidebarList">
+    <li class="sidebar__link--app"><a class="sidebar__link is-active" href="#produccion">Registrar producción</a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link" href="#stock">Alta / Baja de stock</a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link" href="#consultas">Balance y resúmenes</a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link" href="#actividad">Actividad por fecha</a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link" href="#graficos">Gráficos</a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link" href="#grupos">Grupos</a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Estadísticas <span class="tag-soon">próximamente</span></a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Historial <span class="tag-soon">próximamente</span></a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Usuarios y permisos <span class="tag-soon">próximamente</span></a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Configuración <span class="tag-soon">próximamente</span></a></li>
+    <li class="sidebar__hint" id="sidebarLockedHint" hidden>Iniciá sesión para ver el resto del menú</li>
     <li><a class="sidebar__link" href="https://www.cept15elchaja.ar/">PAGINA CEPT 15</a></li>
     <li><a class="sidebar__link" href="http://185.2.103.239/cept/">RADIO EL CHAJA</a></li>
   </ul>
@@ -82,8 +83,30 @@
   </div>
 </nav>
 
+<!-- ============ PANTALLA DE LOGIN OBLIGATORIO ============
+  Visible por defecto (asumimos "sin sesión" hasta que initAuth() de auth.js
+  termine de resolver). js/components/authGate.js decide si se queda así o
+  se oculta a favor de <main>. No se saca del DOM: sólo se togglea [hidden].
+-->
+<div class="auth-gate" id="authGate">
+  <div class="auth-gate__card">
+    <img src="assets/logo.png" alt="" class="auth-gate__logo" width="56" height="56">
+    <p class="auth-gate__eyebrow">ChajaBot</p>
+    <h1 class="auth-gate__title">El campo, <em>en orden.</em></h1>
+    <p class="auth-gate__lede" id="authGateMessage">Comprobando tu sesión…</p>
+    <button class="btn btn--primary" id="authGateLoginBtn" hidden>Iniciar sesión</button>
+    <p class="auth-gate__foot">
+      Podés seguir viendo
+      <a href="https://www.cept15elchaja.ar/">la página del CEPT 15</a>
+      y
+      <a href="http://185.2.103.239/cept/">Radio El Chaja</a>
+      sin iniciar sesión, desde el menú ☰.
+    </p>
+  </div>
+</div>
+
 <!-- ============ CONTENIDO PRINCIPAL ============ -->
-<main id="main">
+<main id="main" hidden>
 
   <section class="hero">
     <p class="hero__eyebrow">Campaña en curso</p>
@@ -291,7 +314,7 @@
 
 </main>
 
-<footer class="site-footer">
+<footer class="site-footer" id="siteFooter" hidden>
   <p>ChajaBot — gestión agropecuaria. Registro, stock, balance, actividad y gráficos conectados en vivo. Grupos, todavía local. Listo para conectar Auth0.</p>
 </footer>
 

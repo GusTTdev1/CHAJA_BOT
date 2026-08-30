@@ -5,6 +5,7 @@
 // ============================================================================
 
 import { initAuth } from "./auth.js";
+import { initAuthGate } from "./components/authGate.js";
 import { initSidebar } from "./components/sidebar.js";
 import { initUserMenu } from "./components/userMenu.js";
 import { initOnboarding } from "./components/onboarding.js";
@@ -18,6 +19,7 @@ import { initGroups } from "./components/groups.js";
 
 async function bootstrap() {
   await initAuth();
+  initAuthGate(); // bloquea <main> hasta que haya sesión (punto 5.3)
   initSidebar();
   initUserMenu();
   initOnboarding(); // alta automática la primera vez que hay sesión sin familia

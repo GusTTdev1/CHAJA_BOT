@@ -17,7 +17,7 @@ import { showToast } from "./toast.js";
 let tipo = null;
 let evento = null; // solo aplica cuando tipo === "cerdos"
 
-const LABELS_TIPO = { gallinas: "🥚 Gallinas", pollos: "🐔 Pollos", cerdos: "🐖 Cerdos", huerta: "🥬 Huerta" };
+const LABELS_TIPO = { gallinas: "Gallinas", pollos: "Pollos", cerdos: "Cerdos", huerta: "Huerta" };
 const LABELS_PRODUCCION = {
   gallinas: "¿Cuántos huevos juntaste hoy?",
   pollos: "¿Cuántos kilos de pollo obtuviste hoy?",

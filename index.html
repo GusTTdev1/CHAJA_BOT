@@ -61,14 +61,14 @@
 <nav class="sidebar" id="sidebar" aria-label="Menú principal" hidden>
   <div class="sidebar__header">
     <span class="sidebar__eyebrow">Menú</span>
-    <button class="icon-btn icon-btn--ghost" id="sidebarClose" aria-label="Cerrar menú">✕</button>
+    <button class="icon-btn icon-btn--ghost" id="sidebarClose" aria-label="Cerrar menú">&times;</button>
   </div>
   <ul class="sidebar__list" id="sidebarList">
-    <li class="sidebar__link--app"><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Usuarios y permisos <span class="tag-soon">próximamente</span></a></li>
-    <li class="sidebar__link--app"><a class="sidebar__link sidebar__link--disabled" href="#" aria-disabled="true">Configuración <span class="tag-soon">próximamente</span></a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link sidebar__link--disabled sidebar__link--usuarios" href="#" aria-disabled="true"><img class="tile__img" src="assets/icons/usuarios.svg" alt="" width="64" height="64"><span class="tile__label">Usuarios y permisos</span><span class="tag-soon">pronto</span></a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link sidebar__link--disabled sidebar__link--config" href="#" aria-disabled="true"><img class="tile__img" src="assets/icons/config.svg" alt="" width="64" height="64"><span class="tile__label">Configuración</span><span class="tag-soon">pronto</span></a></li>
     <li class="sidebar__hint" id="sidebarLockedHint" hidden>Iniciá sesión para ver el resto del menú</li>
-    <li><a class="sidebar__link" href="https://www.cept15elchaja.ar/">PAGINA CEPT 15</a></li>
-    <li><a class="sidebar__link" href="http://185.2.103.239/cept/">RADIO EL CHAJA</a></li>
+    <li><a class="sidebar__link sidebar__link--cept" href="https://www.cept15elchaja.ar/"><img class="tile__img" src="assets/icons/cept.svg" alt="" width="64" height="64"><span class="tile__label">Página CEPT 15</span></a></li>
+    <li><a class="sidebar__link sidebar__link--radio" href="http://185.2.103.239/cept/"><img class="tile__img" src="assets/icons/radio.svg" alt="" width="64" height="64"><span class="tile__label">Radio El Chaja</span></a></li>
   </ul>
   <div class="sidebar__footer">
     <p>ChajaBot v0.5.1 · conexión online</p>
@@ -92,7 +92,7 @@
       <a href="https://www.cept15elchaja.ar/">la página del CEPT 15</a>
       y
       <a href="http://185.2.103.239/cept/">Radio El Chaja</a>
-      sin iniciar sesión, desde el menú ☰.
+      sin iniciar sesión, desde el menú de arriba a la izquierda.
     </p>
   </div>
 </div>
@@ -100,7 +100,7 @@
 <!-- ============ CONTENIDO PRINCIPAL ============ -->
 <main id="main" hidden>
 
-  <section class="hero">
+  <section class="hero" id="hero">
     <p class="hero__eyebrow">Campaña en curso</p>
     <h1 class="hero__title">El campo, <em>en orden.</em></h1>
     <p class="hero__lede">Registrá producciones, seguí el stock y separá tus animales en grupos, todo desde un mismo lugar.</p>
@@ -115,10 +115,22 @@
     </label>
   </section>
 
+  <!-- ============ INICIO: menú en celdas cuadradas ============ -->
+  <nav class="tile-grid" id="homeMenu" aria-label="Secciones">
+    <a class="tile tile--wheat" href="#produccion"><img class="tile__img" src="assets/icons/registrar.svg" alt="" width="64" height="64"><span class="tile__label">Registrar producción</span></a>
+    <a class="tile tile--moss" href="#stock"><img class="tile__img" src="assets/icons/stock.svg" alt="" width="64" height="64"><span class="tile__label">Alta / Baja de stock</span></a>
+    <a class="tile tile--sky" href="#consultas"><img class="tile__img" src="assets/icons/balance.svg" alt="" width="64" height="64"><span class="tile__label">Balance y resúmenes</span></a>
+    <a class="tile tile--clay" href="#actividad"><img class="tile__img" src="assets/icons/actividad.svg" alt="" width="64" height="64"><span class="tile__label">Actividad por fecha</span></a>
+    <a class="tile tile--plum" href="#graficos"><img class="tile__img" src="assets/icons/graficos.svg" alt="" width="64" height="64"><span class="tile__label">Gráficos</span></a>
+    <a class="tile tile--leaf" href="#grupos"><img class="tile__img" src="assets/icons/grupos.svg" alt="" width="64" height="64"><span class="tile__label">Grupos de producción</span></a>
+  </nav>
+
+  <a class="section-back" id="sectionBack" href="#" hidden>&larr; Inicio</a>
+
   <!-- 1. Registrar nuevas producciones — conectado en vivo a Chaja Bot -->
-  <section class="panel" id="produccion" aria-labelledby="produccion-title">
+  <section class="panel" data-section id="produccion" aria-labelledby="produccion-title">
     <details open>
-      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+      <summary class="panel__header">
         <div>
           <span class="panel__eyebrow">01 · En vivo</span>
           <h2 class="panel__title" id="produccion-title">Registrar producción</h2>
@@ -142,9 +154,9 @@
   </section>
 
   <!-- 2. Alta / Baja de stock — conectado en vivo a Chaja Bot -->
-  <section class="panel" id="stock" aria-labelledby="stock-title">
+  <section class="panel" data-section id="stock" aria-labelledby="stock-title">
     <details>
-      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+      <summary class="panel__header">
         <div>
           <span class="panel__eyebrow">02 · En vivo</span>
           <h2 class="panel__title" id="stock-title">Alta / Baja de stock</h2>
@@ -194,9 +206,9 @@
   </section>
 
   <!-- 3. Balance / Resumen / Historial — conectado en vivo a Chaja Bot -->
-  <section class="panel" id="consultas" aria-labelledby="consultas-title">
+  <section class="panel" data-section id="consultas" aria-labelledby="consultas-title">
     <details>
-      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+      <summary class="panel__header">
         <div>
           <span class="panel__eyebrow">03 · En vivo</span>
           <h2 class="panel__title" id="consultas-title">Balance y resúmenes</h2>
@@ -205,10 +217,10 @@
       </summary>
 
       <div class="panel__content" style="padding-top: 1rem;">
-        <div class="cc-menu">
-          <button class="btn btn--outline" data-consulta="balance">💰 Balance financiero</button>
-          <button class="btn btn--outline" data-consulta="resumen">📊 Resumen de producción</button>
-          <button class="btn btn--outline" data-consulta="info">📖 Historial completo</button>
+        <div class="cc-menu tile-grid tile-grid--small">
+          <button class="tile tile--wheat" data-consulta="balance"><img class="tile__img" src="assets/icons/balance.svg" alt="" width="64" height="64"><span class="tile__label">Balance financiero</span></button>
+          <button class="tile tile--sky" data-consulta="resumen"><img class="tile__img" src="assets/icons/resumen.svg" alt="" width="64" height="64"><span class="tile__label">Resumen de producción</span></button>
+          <button class="tile tile--clay" data-consulta="info"><img class="tile__img" src="assets/icons/historial.svg" alt="" width="64" height="64"><span class="tile__label">Historial completo</span></button>
         </div>
         <div class="result-box" id="consultasResult" aria-live="polite" hidden></div>
       </div>
@@ -216,9 +228,9 @@
   </section>
 
   <!-- 4. Actividad por fecha — conectado en vivo a Chaja Bot -->
-  <section class="panel" id="actividad" aria-labelledby="actividad-title">
+  <section class="panel" data-section id="actividad" aria-labelledby="actividad-title">
     <details>
-      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+      <summary class="panel__header">
         <div>
           <span class="panel__eyebrow">04 · En vivo</span>
           <h2 class="panel__title" id="actividad-title">Actividad por fecha</h2>
@@ -243,9 +255,9 @@
   </section>
 
   <!-- 5. Gráficos — conectado en vivo a Chaja Bot -->
-  <section class="panel" id="graficos" aria-labelledby="graficos-title">
+  <section class="panel" data-section id="graficos" aria-labelledby="graficos-title">
     <details>
-      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+      <summary class="panel__header">
         <div>
           <span class="panel__eyebrow">05 · En vivo</span>
           <h2 class="panel__title" id="graficos-title">Gráficos</h2>
@@ -283,9 +295,9 @@
   </section>
 
   <!-- 3. Grupos de producción -->
-  <section class="panel" id="grupos" aria-labelledby="grupos-title">
+  <section class="panel" data-section id="grupos" aria-labelledby="grupos-title">
     <details>
-      <summary class="panel__header" style="cursor: pointer; list-style: none;">
+      <summary class="panel__header">
         <div>
           <span class="panel__eyebrow">06 · Local</span>
           <h2 class="panel__title" id="grupos-title">Grupos de producción <span class="tag-soon">demo local</span></h2>
@@ -315,7 +327,7 @@
   <div class="modal" id="productionModal" role="dialog" aria-modal="true" aria-labelledby="productionModalTitle">
     <header class="modal__header">
       <h3 class="modal__title" id="productionModalTitle">Nuevo registro</h3>
-      <button class="icon-btn icon-btn--ghost" id="productionModalClose" aria-label="Cerrar">✕</button>
+      <button class="icon-btn icon-btn--ghost" id="productionModalClose" aria-label="Cerrar">&times;</button>
     </header>
 
     <div class="modal__body">
@@ -323,20 +335,20 @@
 
       <!-- Paso 1: tipo -->
       <div class="type-select" data-step="tipo">
-        <button class="type-card" type="button" data-tipo="gallinas">
-          <span class="type-card__icon" aria-hidden="true">🥚</span>
+        <button class="tile type-card" type="button" data-tipo="gallinas">
+          <img class="tile__img" src="assets/icons/gallinas.svg" alt="" width="64" height="64">
           <span class="type-card__label">Gallinas</span>
         </button>
-        <button class="type-card" type="button" data-tipo="pollos">
-          <span class="type-card__icon" aria-hidden="true">🐔</span>
+        <button class="tile type-card" type="button" data-tipo="pollos">
+          <img class="tile__img" src="assets/icons/pollos.svg" alt="" width="64" height="64">
           <span class="type-card__label">Pollos</span>
         </button>
-        <button class="type-card" type="button" data-tipo="cerdos">
-          <span class="type-card__icon" aria-hidden="true">🐖</span>
+        <button class="tile type-card" type="button" data-tipo="cerdos">
+          <img class="tile__img" src="assets/icons/cerdos.svg" alt="" width="64" height="64">
           <span class="type-card__label">Cerdos</span>
         </button>
-        <button class="type-card" type="button" data-tipo="huerta">
-          <span class="type-card__icon" aria-hidden="true">🥬</span>
+        <button class="tile type-card" type="button" data-tipo="huerta">
+          <img class="tile__img" src="assets/icons/huerta.svg" alt="" width="64" height="64">
           <span class="type-card__label">Huerta</span>
         </button>
       </div>
@@ -344,24 +356,24 @@
       <!-- Paso 2 (solo cerdos): evento -->
       <div class="type-select" data-step="evento" hidden>
         <button type="button" class="back-link" data-back="tipo">← Elegir otra área</button>
-        <button class="type-card" type="button" data-evento="produccion">
-          <span class="type-card__icon" aria-hidden="true">🏭</span>
+        <button class="tile type-card" type="button" data-evento="produccion">
+          <img class="tile__img" src="assets/icons/produccion.svg" alt="" width="64" height="64">
           <span class="type-card__label">Producción</span>
         </button>
-        <button class="type-card" type="button" data-evento="celo">
-          <span class="type-card__icon" aria-hidden="true">❤️</span>
+        <button class="tile type-card" type="button" data-evento="celo">
+          <img class="tile__img" src="assets/icons/celo.svg" alt="" width="64" height="64">
           <span class="type-card__label">Celo</span>
         </button>
-        <button class="type-card" type="button" data-evento="parto">
-          <span class="type-card__icon" aria-hidden="true">🍼</span>
+        <button class="tile type-card" type="button" data-evento="parto">
+          <img class="tile__img" src="assets/icons/parto.svg" alt="" width="64" height="64">
           <span class="type-card__label">Parto</span>
         </button>
-        <button class="type-card" type="button" data-evento="destete">
-          <span class="type-card__icon" aria-hidden="true">🐖</span>
+        <button class="tile type-card" type="button" data-evento="destete">
+          <img class="tile__img" src="assets/icons/destete.svg" alt="" width="64" height="64">
           <span class="type-card__label">Destete</span>
         </button>
-        <button class="type-card" type="button" data-evento="sanidad">
-          <span class="type-card__icon" aria-hidden="true">💉</span>
+        <button class="tile type-card" type="button" data-evento="sanidad">
+          <img class="tile__img" src="assets/icons/sanidad.svg" alt="" width="64" height="64">
           <span class="type-card__label">Sanidad</span>
         </button>
       </div>
@@ -446,7 +458,7 @@
   <div class="modal" id="groupModal" role="dialog" aria-modal="true" aria-labelledby="groupModalTitle">
     <header class="modal__header">
       <h3 class="modal__title" id="groupModalTitle">Nuevo grupo</h3>
-      <button class="icon-btn icon-btn--ghost" id="groupModalClose" aria-label="Cerrar">✕</button>
+      <button class="icon-btn icon-btn--ghost" id="groupModalClose" aria-label="Cerrar">&times;</button>
     </header>
 
     <div class="modal__body">

@@ -16,6 +16,7 @@ import { initConsultas } from "./components/consultas.js";
 import { initActividad } from "./components/actividad.js";
 import { initGraficos } from "./components/graficos.js";
 import { initGroups } from "./components/groups.js";
+import { initMenuGrid } from "./components/menuGrid.js";
 
 async function bootstrap() {
   await initAuth();
@@ -30,6 +31,7 @@ async function bootstrap() {
   initActividad();
   initGraficos();
   initGroups();
+  initMenuGrid(); // menú de inicio en celdas: muestra una sección por vez
 }
 
 bootstrap();

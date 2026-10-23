@@ -213,6 +213,8 @@ body::before {
 .brand__wordmark em { color: var(--wheat); font-style: normal; }
 
 .user-orb {
+  position: relative;
+  overflow: hidden;
   width: 40px;
   height: 40px;
   border-radius: var(--radius-pill);
@@ -229,6 +231,16 @@ body::before {
 }
 .user-orb:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
 .user-orb:active { transform: translateY(0); }
+
+/* Foto de perfil de Google dentro del círculo superior derecho. Se solapa
+   a las iniciales; userMenu.js decide cuál de las dos mostrar. */
+.user-orb__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 .user-panel {
   position: absolute;
@@ -249,12 +261,27 @@ body::before {
   gap: 12px;
 }
 .user-panel__avatar {
+  position: relative;
+  overflow: hidden;
   width: 40px;
   height: 40px;
   border-radius: var(--radius-pill);
   background: var(--moss-light);
   border: 1px dashed var(--moss);
   flex: none;
+}
+/* Cuando hay foto de Google, sacamos el fondo/borde punteado de placeholder */
+.user-panel__avatar--has-photo {
+  background: none;
+  border-style: solid;
+  border-color: var(--line);
+}
+.user-panel__avatar-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .user-panel__name {
   margin: 0;

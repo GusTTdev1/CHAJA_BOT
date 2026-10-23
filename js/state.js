@@ -30,6 +30,7 @@ const state = {
     usuarioId: null, // sub de Auth0 (o UUID de invitado) — ver auth.js
     name: null,
     email: null,
+    picture: null, // foto de perfil de Google (profile.picture de Auth0)
   },
 };
 

@@ -609,8 +609,7 @@ main {
    ========================================================================== */
 
 .segmented {
-  display: inline-grid;
-  grid-auto-flow: column;
+  display: inline-flex;
   background: var(--surface-alt);
   border-radius: var(--radius-pill);
   padding: 3px;

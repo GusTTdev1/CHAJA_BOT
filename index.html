@@ -64,14 +64,14 @@
     <button class="icon-btn icon-btn--ghost" id="sidebarClose" aria-label="Cerrar menú">&times;</button>
   </div>
   <ul class="sidebar__list" id="sidebarList">
-    <li class="sidebar__link--app"><a class="sidebar__link sidebar__link--disabled sidebar__link--usuarios" href="#" aria-disabled="true"><img class="tile__img" src="assets/icons/usuarios.svg" alt="" width="64" height="64"><span class="tile__label">Usuarios y permisos</span><span class="tag-soon">pronto</span></a></li>
-    <li class="sidebar__link--app"><a class="sidebar__link sidebar__link--disabled sidebar__link--config" href="#" aria-disabled="true"><img class="tile__img" src="assets/icons/config.svg" alt="" width="64" height="64"><span class="tile__label">Configuración</span><span class="tag-soon">pronto</span></a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link sidebar__link--disabled sidebar__link--usuarios" href="#" aria-disabled="true"><span class="tile__label">Usuarios y permisos</span><span class="tag-soon">pronto</span></a></li>
+    <li class="sidebar__link--app"><a class="sidebar__link sidebar__link--disabled sidebar__link--config" href="#" aria-disabled="true"><span class="tile__label">Configuración</span><span class="tag-soon">pronto</span></a></li>
     <li class="sidebar__hint" id="sidebarLockedHint" hidden>Iniciá sesión para ver el resto del menú</li>
-    <li><a class="sidebar__link sidebar__link--cept" href="https://www.cept15elchaja.ar/"><img class="tile__img" src="assets/icons/cept.svg" alt="" width="64" height="64"><span class="tile__label">Página CEPT 15</span></a></li>
-    <li><a class="sidebar__link sidebar__link--radio" href="http://185.2.103.239/cept/"><img class="tile__img" src="assets/icons/radio.svg" alt="" width="64" height="64"><span class="tile__label">Radio El Chaja</span></a></li>
+    <li><a class="sidebar__link sidebar__link--cept" href="https://www.cept15elchaja.ar/"><span class="tile__label">Página CEPT 15</span></a></li>
+    <li><a class="sidebar__link sidebar__link--radio" href="http://185.2.103.239/cept/"><span class="tile__label">Radio El Chaja</span></a></li>
   </ul>
   <div class="sidebar__footer">
-    <p>ChajaBot v0.5.1 · conexión online</p>
+    <p>ChajaBot v0.5.2 · conexión online</p>
   </div>
 </nav>
 
@@ -106,6 +106,15 @@
     <p class="hero__lede">Registrá producciones, seguí el stock y separá tus animales en grupos, todo desde un mismo lugar.</p>
   </section>
 
+  <!-- Identidad: se usa como "agente" en cada registro que se manda a Chaja Bot -->
+  <section class="panel panel--slim" id="identidad" aria-labelledby="identidad-title">
+    <h2 class="panel__title" id="identidad-title" style="font-size:16px; margin:0 0 10px;">Tu nombre</h2>
+    <label class="field" style="max-width: 320px; margin-bottom: 0;">
+      <span class="field__label">Para identificarte en los registros</span>
+      <input class="field__input" type="text" id="agenteNombre" placeholder="Ej: Juan Pérez">
+    </label>
+  </section>
+
   <!-- ============ INICIO: menú en celdas cuadradas ============ -->
   <nav class="tile-grid" id="homeMenu" aria-label="Secciones">
     <a class="tile tile--wheat" href="#produccion"><img class="tile__img" src="assets/icons/registrar.svg" alt="" width="64" height="64"><span class="tile__label">Registrar producción</span></a>
@@ -114,6 +123,7 @@
     <a class="tile tile--clay" href="#actividad"><img class="tile__img" src="assets/icons/actividad.svg" alt="" width="64" height="64"><span class="tile__label">Actividad por fecha</span></a>
     <a class="tile tile--plum" href="#graficos"><img class="tile__img" src="assets/icons/graficos.svg" alt="" width="64" height="64"><span class="tile__label">Gráficos</span></a>
     <a class="tile tile--leaf" href="#grupos"><img class="tile__img" src="assets/icons/grupos.svg" alt="" width="64" height="64"><span class="tile__label">Grupos de producción</span></a>
+    <a class="tile tile--berry" href="#voz"><img class="tile__img" src="assets/icons/voz.svg" alt="" width="64" height="64"><span class="tile__label">Nota de voz</span></a>
   </nav>
 
   <a class="section-back" id="sectionBack" href="#" hidden>&larr; Inicio</a>
@@ -303,6 +313,49 @@
         <div class="groups-grid" id="groupsGrid" aria-live="polite">
           <!-- Grupos de ejemplo cargados vía JS -->
         </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- 7. Nota de voz — graba, Groq transcribe + interpreta, el usuario confirma
+       y recién ahí se manda por el mismo camino de siempre (runFlow). -->
+  <section class="panel" data-section id="voz" aria-labelledby="voz-title">
+    <details>
+      <summary class="panel__header">
+        <div>
+          <span class="panel__eyebrow">07 · IA</span>
+          <h2 class="panel__title" id="voz-title">Nota de voz</h2>
+          <p class="panel__desc">Contá lo que pasó y la IA arma el registro. Siempre te muestra qué entendió antes de guardar nada.</p>
+        </div>
+      </summary>
+
+      <div class="panel__content" style="padding-top: 1rem;">
+        <div class="recorder" id="recorder">
+          <button class="recorder__btn" id="recorderBtn" type="button" aria-label="Grabar nota de voz">
+            <svg class="recorder__icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="3" width="6" height="11" rx="3"/>
+              <path d="M6 11v1a6 6 0 0 0 12 0v-1"/>
+              <line x1="12" y1="18" x2="12" y2="21"/>
+              <line x1="9" y1="21" x2="15" y2="21"/>
+            </svg>
+          </button>
+          <p class="recorder__status" id="recorderStatus">Tocá para grabar</p>
+          <p class="recorder__timer" id="recorderTimer" hidden>00:00</p>
+        </div>
+
+        <div class="recorder__review" id="recorderReview" hidden>
+          <p class="recorder__block-label">Escuché:</p>
+          <p class="recorder__transcript" id="recorderTranscript"></p>
+          <p class="recorder__block-label">Entendí:</p>
+          <ul class="recorder__interpret" id="recorderInterpretList"></ul>
+          <div class="form-actions">
+            <span class="form-status" id="recorderFormStatus" role="status"></span>
+            <button class="btn btn--outline" id="recorderRetryBtn" type="button">Grabar de nuevo</button>
+            <button class="btn btn--primary" id="recorderConfirmBtn" type="button">Confirmar y guardar</button>
+          </div>
+        </div>
+
+        <div class="result-box" id="recorderResult" aria-live="polite" hidden></div>
       </div>
     </details>
   </section>

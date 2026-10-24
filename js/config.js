@@ -38,6 +38,13 @@ export const CONFIG = {
     // "accion" dentro del body. n8n decide internamente qué hacer
     // (ver nodo Switch sobre {{$json.body.accion}}).
     webhookUrl: "https://n8n2.rededubot.org/webhook/chaja-web-api",
+    // Webhook nuevo, SOLO para la Nota de voz: recibe el audio (base64),
+    // adentro de n8n lo transcribe y lo interpreta con Groq, y devuelve
+    // { ok, transcripcion, interpretado } sin escribir nada todavía en el
+    // Sheet — eso pasa recién cuando el usuario confirma (ver js/components/voz.js).
+    // Cambiar por la URL real una vez importado y activado el workflow
+    // "CHAJA_BOT_WEB_voz.json" en n8n.
+    voiceWebhookUrl: "https://n8n2.rededubot.org/webhook/chaja-voice-api",
   },
   // Los tipos de producción (gallinas/pollos/cerdos/huerta) y los eventos de
   // cerdos (produccion/celo/parto/destete/sanidad) están hardcodeados en

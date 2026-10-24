@@ -1,9 +1,9 @@
 
 :root {
   /* Color */
-  --bg: #F5F2EA;
+  --bg: #F1E8D3;
   --surface: #FFFFFF;
-  --surface-alt: #EFEADE;
+  --surface-alt: #E8DDBF;
   --ink: #1C2A20;
   --ink-soft: #4E5C51;
   --ink-faint: #8A9188;
@@ -25,6 +25,8 @@
   --plum-light: #EBDDEA;
   --leaf: #3F8B4A;
   --leaf-light: #D8EDD4;
+  --berry: #A8345B;
+  --berry-light: #F3DCE4;
 
   --line: #DED7C6;
   --line-strong: #C9C0AA;
@@ -66,12 +68,15 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  /* Fondo con color: trigo cálido arriba, verde fresco abajo, y dos "manchas"
-     suaves para que no quede plano. */
+  /* Fondo: un único degradé construido con los mismos --wheat / --forest que
+     usa el resto de la página (antes mezclaba amarillos y verdes propios,
+     que no calzaban con las tarjetas de encima — por eso se sentía "raro").
+     Una sola mancha de luz cálida arriba y un velo verde abajo, sutiles,
+     sobre el --bg de base. */
   background:
-    radial-gradient(900px 520px at 100% 0%, rgba(233, 185, 73, 0.38), transparent 70%),
-    radial-gradient(800px 600px at 0% 100%, rgba(95, 160, 91, 0.30), transparent 70%),
-    linear-gradient(165deg, #FBEBC2 0%, #E9F0CE 52%, #CDE6D3 100%);
+    radial-gradient(1100px 620px at 50% -8%, rgba(185, 134, 46, 0.16), transparent 60%),
+    radial-gradient(900px 680px at 100% 105%, rgba(31, 77, 51, 0.12), transparent 65%),
+    var(--bg);
   background-attachment: fixed;
   color: var(--ink);
   font-family: var(--font-body);
@@ -114,11 +119,25 @@ body::before {
   z-index: 0;
   background-image: repeating-linear-gradient(
     115deg,
-    rgba(31, 77, 51, 0.02) 0px,
-    rgba(31, 77, 51, 0.02) 1px,
+    rgba(31, 77, 51, 0.025) 0px,
+    rgba(31, 77, 51, 0.025) 1px,
     transparent 1px,
     transparent 64px
   );
+}
+
+/* Grano de papel: la textura que le faltaba al fondo para no sentirse
+   vacío. Nada de esto se nota como "efecto" — es casi imperceptible a
+   propósito, como el papel de un cuaderno real en vez de un color plano. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
 /* ==========================================================================
@@ -134,7 +153,7 @@ body::before {
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   padding: 0 20px;
-  background: rgba(255, 247, 223, 0.80);
+  background: rgba(241, 232, 211, 0.86);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -1156,7 +1175,7 @@ details[open] summary {
 .tile-grid--small { grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
 .tile-grid--small .tile__label { font-size: 12.5px; }
 .tile-grid > .tile { min-width: 0; padding: 10px 6px; }
-.tile-grid--small .tile__img { width: 48px; height: 48px; }
+.tile-grid--small .tile__img { width: 48px; height: 48px; padding: 8px; }
 .tile-grid.is-disabled { opacity: 0.45; pointer-events: none; }
 @media (max-width: 640px) {
   .tile-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -1176,9 +1195,9 @@ details[open] summary {
   gap: 10px;
   padding: 14px 10px;
   text-align: center;
-  background: var(--tile-bg);
-  color: var(--tile-fg);
-  border: 2px solid var(--tile-line);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1.5px solid var(--line);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   transition: transform 0.16s var(--ease), box-shadow 0.16s var(--ease), border-color 0.16s var(--ease);
@@ -1186,8 +1205,19 @@ details[open] summary {
 .tile:hover:not(:disabled) { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--tile-fg); }
 .tile:active:not(:disabled) { transform: translateY(0) scale(0.98); }
 .tile:disabled { opacity: 0.5; cursor: progress; }
-.tile__img { width: 58px; height: 58px; flex: none; }
-.tile__label { font-weight: 700; font-size: 14.5px; line-height: 1.2; }
+/* El color de cada categoría vive en la chapita circular detrás del ícono,
+   no en toda la celda: así cada sección se distingue sin que la grilla
+   entera se vea como un mosaico de pasteles sueltos. */
+.tile__img {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: var(--radius-pill);
+  background: var(--tile-bg);
+}
+.tile__label { font-weight: 700; font-size: 14.5px; line-height: 1.2; color: var(--ink); }
 
 .tile--wheat { --tile-bg: var(--wheat-light); --tile-fg: #7A5614; --tile-line: #E8D3A2; }
 .tile--moss  { --tile-bg: var(--moss-light);  --tile-fg: var(--forest-dark); --tile-line: #BCD3BF; }
@@ -1195,6 +1225,75 @@ details[open] summary {
 .tile--clay  { --tile-bg: var(--clay-light);  --tile-fg: #7A3427; --tile-line: #E6C3BA; }
 .tile--plum  { --tile-bg: var(--plum-light);  --tile-fg: #573556; --tile-line: #D5BCD3; }
 .tile--leaf  { --tile-bg: var(--leaf-light);  --tile-fg: #285A30; --tile-line: #B7D8B1; }
+.tile--berry { --tile-bg: var(--berry-light); --tile-fg: #7A1F3D; --tile-line: #E8C2D0; }
+
+/* ==========================================================================
+   Nota de voz: botón de grabación + revisión de lo que entendió la IA
+   ========================================================================== */
+
+.recorder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 16px;
+  text-align: center;
+}
+.recorder__btn {
+  width: 76px;
+  height: 76px;
+  border-radius: var(--radius-pill);
+  background: var(--berry);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease), background 0.15s var(--ease);
+}
+.recorder__btn:hover:not(:disabled) { transform: translateY(-2px); }
+.recorder__btn:disabled { opacity: 0.55; cursor: progress; }
+.recorder__icon { width: 30px; height: 30px; }
+.recorder__btn.is-recording {
+  background: var(--clay);
+  animation: recorder-pulse 1.4s var(--ease) infinite;
+}
+.recorder__btn.is-processing { background: var(--ink-faint); animation: none; }
+@keyframes recorder-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(155, 74, 59, 0.35); }
+  50% { box-shadow: 0 0 0 14px rgba(155, 74, 59, 0); }
+}
+.recorder__status { font-size: 14px; color: var(--ink-soft); margin: 0; }
+.recorder__timer { font-family: var(--font-mono); font-size: 13px; color: var(--ink-faint); margin: 0; }
+
+.recorder__review {
+  margin-top: 1.25rem;
+  padding: 16px 18px;
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+.recorder__block-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  margin: 0 0 4px;
+}
+.recorder__block-label + .recorder__block-label { margin-top: 14px; }
+.recorder__transcript {
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0 0 14px;
+}
+.recorder__interpret {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.recorder__interpret li { font-size: 14.5px; }
 
 /* Celdas del modal de producción: colores rotados por posición */
 .type-select > .tile:nth-of-type(4n+1) { --tile-bg: var(--wheat-light); --tile-fg: #7A5614; --tile-line: #E8D3A2; }

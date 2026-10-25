@@ -22,6 +22,7 @@
 import { CONFIG } from "../config.js";
 import { getUsuarioId, getNombre } from "../auth.js";
 import { runFlow } from "../flowClient.js";
+import { consultarStock } from "../api.js";
 import { showToast } from "./toast.js";
 
 const MAX_MS = 60_000; // tope de grabación: 60s, para no mandar audios eternos a Groq
@@ -206,16 +207,21 @@ export function initVoz() {
 
   confirmBtn.addEventListener("click", async () => {
     if (!interpretado) return;
-    const { pasos, error } = armarPasos(interpretado);
+
+    confirmBtn.disabled = true;
+    retryBtn.disabled = true;
+    formStatus.classList.remove("is-error");
+    formStatus.textContent = "Verificando stock actual…";
+
+    const { pasos, error } = await armarPasos(interpretado);
     if (error) {
+      confirmBtn.disabled = false;
+      retryBtn.disabled = false;
       formStatus.textContent = error;
       formStatus.classList.add("is-error");
       return;
     }
 
-    confirmBtn.disabled = true;
-    retryBtn.disabled = true;
-    formStatus.classList.remove("is-error");
     formStatus.textContent = "Guardando en Chaja Bot…";
 
     const res = await runFlow(pasos);
@@ -296,7 +302,7 @@ function describirInterpretacion(d) {
   return filas;
 }
 
-function armarPasos(d) {
+async function armarPasos(d) {
   if (d.intento === "registrar_produccion") {
     const tiposValidos = ["gallinas", "pollos", "cerdos", "huerta"];
     if (!tiposValidos.includes(d.tipo_produccion)) {
@@ -326,15 +332,38 @@ function armarPasos(d) {
       const costo = num(d.costo_sanidad ?? 0);
       pasos.push(d.tratamiento, isNaN(costo) ? 0 : costo);
     } else {
-      const cantidad = num(d.cantidad_animales);
-      const alimento = num(d.alimento_kg ?? 0);
-      const precio = num(d.precio_alimento_kg ?? 0);
+      // El Router de estado sólo pide la cantidad total la PRIMERA vez que
+      // se registra esta categoría. Hay que consultarlo ANTES de armar la
+      // secuencia: si se manda la cantidad de más (o de menos), el paso
+      // siguiente se desalinea y termina pisando otro campo.
+      const { ok, stockActual } = await consultarStock();
+      if (!ok) return { error: "No se pudo verificar el stock actual. Probá de nuevo en un momento." };
+
+      const yaTieneStock = Object.prototype.hasOwnProperty.call(stockActual, d.tipo_produccion) && stockActual[d.tipo_produccion] !== null;
+
+      if (!yaTieneStock) {
+        const cantidad = num(d.cantidad_animales);
+        if (isNaN(cantidad) || cantidad <= 0) {
+          return { error: `Es tu primer registro de ${d.tipo_produccion} y no quedó clara la cantidad total — mencionala en la grabación.` };
+        }
+        pasos.push(cantidad);
+      }
+      // si ya había stock cargado, la cantidad total NO se manda (aunque
+      // Groq la haya entendido): el Router ya no la pregunta y mandarla
+      // igual desalinearía el paso siguiente.
+
+      if (d.tipo_produccion !== "huerta") {
+        const alimento = num(d.alimento_kg ?? 0);
+        const precio = num(d.precio_alimento_kg ?? 0);
+        if (isNaN(alimento) || alimento < 0) return { error: "No quedó claro el alimento consumido." };
+        if (isNaN(precio) || precio < 0) return { error: "No quedó claro el precio del alimento." };
+        pasos.push(alimento, precio);
+      }
+      // la huerta no pasa por alimento/precio (ver Router de estado).
+
       const produccion = num(d.produccion_hoy);
-      if (isNaN(cantidad) || cantidad <= 0) return { error: "No quedó clara la cantidad de animales." };
-      if (isNaN(alimento) || alimento < 0) return { error: "No quedó claro el alimento consumido." };
-      if (isNaN(precio) || precio < 0) return { error: "No quedó claro el precio del alimento." };
       if (isNaN(produccion) || produccion < 0) return { error: "No quedó clara la producción de hoy." };
-      pasos.push(cantidad, alimento, precio, produccion);
+      pasos.push(produccion);
     }
 
     pasos.push(d.observacion ? d.observacion : "no");

@@ -124,6 +124,7 @@
     <a class="tile tile--plum" href="#graficos"><img class="tile__img" src="assets/icons/graficos.svg" alt="" width="64" height="64"><span class="tile__label">Gráficos</span></a>
     <a class="tile tile--leaf" href="#grupos"><img class="tile__img" src="assets/icons/grupos.svg" alt="" width="64" height="64"><span class="tile__label">Grupos de producción</span></a>
     <a class="tile tile--berry" href="#voz"><img class="tile__img" src="assets/icons/voz.svg" alt="" width="64" height="64"><span class="tile__label">Nota de voz</span></a>
+    <a class="tile tile--sky" href="#empleados"><img class="tile__img" src="assets/icons/empleados.svg" alt="" width="64" height="64"><span class="tile__label">Empleados</span></a>
   </nav>
 
   <a class="section-back" id="sectionBack" href="#" hidden>&larr; Inicio</a>
@@ -360,6 +361,87 @@
     </details>
   </section>
 
+  <!-- 8. Empleados — configuración por producción, apagada por defecto. No
+       es un registro diario: el sueldo que cargues acá se usa para sumar
+       el costo de mano de obra al precio sugerido de cada registro. -->
+  <section class="panel" data-section id="empleados" aria-labelledby="empleados-title">
+    <details>
+      <summary class="panel__header">
+        <div>
+          <span class="panel__eyebrow">08 · Configuración</span>
+          <h2 class="panel__title" id="empleados-title">Empleados</h2>
+          <p class="panel__desc">Marcá en qué producciones tenés empleados contratados y cuál es su sueldo mensual. Apagado por defecto — no afecta nada hasta que lo actives.</p>
+        </div>
+      </summary>
+
+      <div class="panel__content" style="padding-top: 1rem;">
+        <div class="empleados-list" id="empleadosList">
+          <div class="empleados-row" data-tipo="gallinas">
+            <div class="empleados-row__head">
+              <span class="empleados-row__label">Gallinas</span>
+              <label class="switch">
+                <input type="checkbox" class="empleados-row__toggle">
+                <span class="switch__track"><span class="switch__thumb"></span></span>
+              </label>
+            </div>
+            <label class="field empleados-row__sueldo" hidden>
+              <span class="field__label">Sueldo mensual total</span>
+              <input class="field__input" type="number" min="0" step="0.01">
+            </label>
+          </div>
+          <div class="empleados-row" data-tipo="pollos">
+            <div class="empleados-row__head">
+              <span class="empleados-row__label">Pollos</span>
+              <label class="switch">
+                <input type="checkbox" class="empleados-row__toggle">
+                <span class="switch__track"><span class="switch__thumb"></span></span>
+              </label>
+            </div>
+            <label class="field empleados-row__sueldo" hidden>
+              <span class="field__label">Sueldo mensual total</span>
+              <input class="field__input" type="number" min="0" step="0.01">
+            </label>
+          </div>
+          <div class="empleados-row" data-tipo="cerdos">
+            <div class="empleados-row__head">
+              <span class="empleados-row__label">Cerdos</span>
+              <label class="switch">
+                <input type="checkbox" class="empleados-row__toggle">
+                <span class="switch__track"><span class="switch__thumb"></span></span>
+              </label>
+            </div>
+            <label class="field empleados-row__sueldo" hidden>
+              <span class="field__label">Sueldo mensual total</span>
+              <input class="field__input" type="number" min="0" step="0.01">
+            </label>
+          </div>
+          <div class="empleados-row" data-tipo="huerta">
+            <div class="empleados-row__head">
+              <span class="empleados-row__label">Huerta</span>
+              <label class="switch">
+                <input type="checkbox" class="empleados-row__toggle">
+                <span class="switch__track"><span class="switch__thumb"></span></span>
+              </label>
+            </div>
+            <label class="field empleados-row__sueldo" hidden>
+              <span class="field__label">Sueldo mensual total</span>
+              <input class="field__input" type="number" min="0" step="0.01">
+            </label>
+          </div>
+        </div>
+
+        <p class="field__hint">Al guardar se sobrescribe la configuración guardada antes para cada producción — este panel no muestra todavía lo que ya está guardado.</p>
+
+        <div class="form-actions">
+          <span class="form-status" id="empleadosStatus" role="status"></span>
+          <button class="btn btn--primary" id="empleadosGuardar" type="button">Guardar configuración</button>
+        </div>
+
+        <div class="result-box" id="empleadosResult" aria-live="polite" hidden></div>
+      </div>
+    </details>
+  </section>
+
 </main>
 
 <footer class="site-footer" id="siteFooter" hidden>
@@ -429,15 +511,22 @@
 
         <!-- rama estándar: produccion diaria (gallinas/pollos/huerta/cerdos-produccion) -->
         <div id="campoEstandar" hidden>
-          <label class="field">
+          <p class="field__hint" id="campoCantidadCargando" hidden>Revisando si ya tenés stock cargado…</p>
+          <!-- Sólo aparece la primera vez que se registra esta producción
+               (se consulta el stock actual antes de mostrar el formulario,
+               ver production.js). Las próximas veces se salta directo al
+               alimento, para no volver a sumar la cantidad total. -->
+          <label class="field" id="campoCantidadWrap" hidden>
             <span class="field__label" id="campoCantidadLabel">Cantidad de animales</span>
             <input class="field__input" type="number" min="1" id="campoCantidad">
           </label>
-          <label class="field">
+          <!-- La huerta no consume alimento balanceado: estos dos campos se
+               ocultan para ese tipo (ver production.js). -->
+          <label class="field" id="campoAlimentoWrap">
             <span class="field__label">Alimento consumido hoy (kg)</span>
             <input class="field__input" type="number" min="0" step="0.01" id="campoAlimentoKg">
           </label>
-          <label class="field">
+          <label class="field" id="campoPrecioAlimentoWrap">
             <span class="field__label">Costo por kilo de ese alimento</span>
             <input class="field__input" type="number" min="0" step="0.01" id="campoPrecioAlimento">
           </label>

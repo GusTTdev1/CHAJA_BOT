@@ -73,6 +73,21 @@ export async function enviarTexto(texto) {
   }
 }
 
+// Pregunta si ya hay stock inicial cargado por tipo de producción, ANTES de
+// abrir el formulario de registro. El Router de estado ahora sólo pregunta
+// la cantidad total la primera vez por categoría — si el formulario no supiera
+// esto de antemano, podría mandar un paso de más (o de menos) y desalinear
+// toda la secuencia con lo que el Router espera a continuación.
+// Devuelve { ok, stockActual } — con ok:false el llamador no debe asumir
+// nada sobre si hay o no stock cargado, mejor bloquear y pedir reintentar.
+export async function consultarStock() {
+  const res = await enviarTexto("consultar_stock");
+  if (!res || res.accion !== "consultar_stock") {
+    return { ok: false, stockActual: null };
+  }
+  return { ok: true, stockActual: res.stock_actual || {} };
+}
+
 export const api = {
   async crearProduccion(payload) {
     // futuro: return fetch(`${CONFIG.api.baseUrl}${CONFIG.api.endpoints.producciones}`, { method: "POST", body: JSON.stringify(payload) })

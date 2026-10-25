@@ -12,10 +12,15 @@
 
 import { store } from "../state.js";
 import { runFlow } from "../flowClient.js";
+import { consultarStock } from "../api.js";
 import { showToast } from "./toast.js";
 
 let tipo = null;
 let evento = null; // solo aplica cuando tipo === "cerdos"
+// true/false una vez que se sabe si hay que pedir la cantidad inicial;
+// null mientras se está consultando o si la consulta falló (en ese caso no
+// se deja enviar el formulario — ver mostrarFormulario()/armarSecuencia()).
+let cantidadInicialRequerida = null;
 
 const LABELS_TIPO = { gallinas: "Gallinas", pollos: "Pollos", cerdos: "Cerdos", huerta: "Huerta" };
 const LABELS_PRODUCCION = {
@@ -44,12 +49,18 @@ export function initProduction() {
   const campoDestete = document.getElementById("campoDestete");
   const campoSanidad = document.getElementById("campoSanidad");
   const campoCantidadLabel = document.getElementById("campoCantidadLabel");
+  const campoCantidadWrap = document.getElementById("campoCantidadWrap");
+  const campoCantidadCargando = document.getElementById("campoCantidadCargando");
   const campoProduccionLabel = document.getElementById("campoProduccionLabel");
+  const campoAlimentoWrap = document.getElementById("campoAlimentoWrap");
+  const campoPrecioAlimentoWrap = document.getElementById("campoPrecioAlimentoWrap");
   const observacionInput = document.getElementById("productionObservacion");
+  const submitBtn = form.querySelector("button[type=submit]");
 
   function resetWizard() {
     tipo = null;
     evento = null;
+    cantidadInicialRequerida = null;
     stepTipo.hidden = false;
     stepEvento.hidden = true;
     form.hidden = true;
@@ -57,6 +68,9 @@ export function initProduction() {
     status.classList.remove("is-error");
     form.reset();
     [campoEstandar, campoCelo, campoParto, campoDestete, campoSanidad].forEach((c) => (c.hidden = true));
+    campoCantidadWrap.hidden = true;
+    campoCantidadCargando.hidden = true;
+    submitBtn.disabled = false;
     stepLabel.textContent = "Paso 1 — Elegí el área";
   }
 
@@ -104,7 +118,7 @@ export function initProduction() {
   });
 
   // --- Paso 3: formulario final, campos según la rama ---------------------
-  function mostrarFormulario() {
+  async function mostrarFormulario() {
     stepTipo.hidden = true;
     stepEvento.hidden = true;
     form.hidden = false;
@@ -112,6 +126,8 @@ export function initProduction() {
     formType.textContent = tipo === "cerdos" ? `${LABELS_TIPO.cerdos} · ${evento}` : LABELS_TIPO[tipo];
 
     [campoEstandar, campoCelo, campoParto, campoDestete, campoSanidad].forEach((c) => (c.hidden = true));
+    campoCantidadWrap.hidden = true;
+    campoCantidadCargando.hidden = true;
 
     if (evento === "celo") {
       campoCelo.hidden = false;
@@ -122,10 +138,42 @@ export function initProduction() {
     } else if (evento === "sanidad") {
       campoSanidad.hidden = false;
     } else {
-      // produccion (gallinas/pollos/huerta, o cerdos + evento "produccion")
+      // produccion (gallinas/pollos/huerta, o cerdos + evento "produccion"):
+      // el Router de estado sólo pide la cantidad total la PRIMERA vez que
+      // se registra esta categoría — hay que consultarlo antes de mostrar
+      // ese campo, para no mandar un paso de más (o de menos) y desalinear
+      // toda la secuencia con lo que el Router espera a continuación.
       campoEstandar.hidden = false;
-      campoCantidadLabel.textContent = tipo === "huerta" ? "Metros cuadrados de huerta" : "Cantidad de animales";
       campoProduccionLabel.textContent = LABELS_PRODUCCION[tipo] || "Producción de hoy";
+      campoCantidadLabel.textContent = tipo === "huerta" ? "Metros cuadrados de huerta (total)" : "Cantidad de animales (total)";
+      // La huerta no pasa por alimento balanceado (ver Router de estado).
+      const esHuerta = tipo === "huerta";
+      campoAlimentoWrap.hidden = esHuerta;
+      campoPrecioAlimentoWrap.hidden = esHuerta;
+
+      cantidadInicialRequerida = null;
+      campoCantidadCargando.hidden = false;
+      submitBtn.disabled = true;
+
+      const { ok, stockActual } = await consultarStock();
+
+      // Si en el medio el usuario volvió atrás o cerró el modal, no pisar
+      // nada de lo que esté mostrando ahora.
+      if (tipo === null || form.hidden) return;
+
+      campoCantidadCargando.hidden = true;
+      submitBtn.disabled = false;
+
+      if (!ok) {
+        status.textContent = "No se pudo verificar el stock actual. Probá cerrar y abrir de nuevo el formulario.";
+        status.classList.add("is-error");
+        submitBtn.disabled = true;
+        return;
+      }
+
+      const yaTieneStock = Object.prototype.hasOwnProperty.call(stockActual, tipo) && stockActual[tipo] !== null;
+      cantidadInicialRequerida = !yaTieneStock;
+      campoCantidadWrap.hidden = yaTieneStock;
     }
   }
 
@@ -168,15 +216,24 @@ export function initProduction() {
       if (isNaN(costo) || costo < 0) return { error: "Ingresá un costo válido." };
       pasos.push(tratamiento, costo);
     } else {
-      const cantidad = num(document.getElementById("campoCantidad"));
-      const alimento = num(document.getElementById("campoAlimentoKg"));
-      const precio = num(document.getElementById("campoPrecioAlimento"));
+      if (cantidadInicialRequerida === null) {
+        return { error: "Todavía se está verificando el stock actual, esperá un segundo y volvé a enviar." };
+      }
+      if (cantidadInicialRequerida) {
+        const cantidad = num(document.getElementById("campoCantidad"));
+        if (isNaN(cantidad) || cantidad <= 0) return { error: "Ingresá una cantidad total válida." };
+        pasos.push(cantidad);
+      }
+      if (tipo !== "huerta") {
+        const alimento = num(document.getElementById("campoAlimentoKg"));
+        const precio = num(document.getElementById("campoPrecioAlimento"));
+        if (isNaN(alimento) || alimento < 0) return { error: "Ingresá un consumo de alimento válido." };
+        if (isNaN(precio) || precio < 0) return { error: "Ingresá un precio de alimento válido." };
+        pasos.push(alimento, precio);
+      }
       const produccion = num(document.getElementById("campoProduccion"));
-      if (isNaN(cantidad) || cantidad <= 0) return { error: "Ingresá una cantidad de animales válida." };
-      if (isNaN(alimento) || alimento < 0) return { error: "Ingresá un consumo de alimento válido." };
-      if (isNaN(precio) || precio < 0) return { error: "Ingresá un precio de alimento válido." };
       if (isNaN(produccion) || produccion < 0) return { error: "Ingresá una producción de hoy válida." };
-      pasos.push(cantidad, alimento, precio, produccion);
+      pasos.push(produccion);
     }
 
     const observacion = observacionInput.value.trim();

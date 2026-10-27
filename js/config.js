@@ -53,7 +53,7 @@ export const CONFIG = {
   sensores: {
     webhookUrl: "https://n8n2.rededubot.org/webhook/chaja-sensores-api",
     // Cada cuánto se vuelve a pedir el panel (el Arduino envía cada 5 min).
-    refrescoMs: 2 * 60 * 1000,
+    refrescoMs: 10 * 1000,
   },
   // Los tipos de producción (gallinas/pollos/cerdos/huerta) y los eventos de
   // cerdos (produccion/celo/parto/destete/sanidad) están hardcodeados en

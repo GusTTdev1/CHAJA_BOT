@@ -19,6 +19,7 @@ import { initGroups } from "./components/groups.js";
 import { initMenuGrid } from "./components/menuGrid.js";
 import { initVoz } from "./components/voz.js";
 import { initEmpleados } from "./components/empleados.js";
+import { initSensores } from "./components/sensores.js";
 
 async function bootstrap() {
   await initAuth();
@@ -35,6 +36,7 @@ async function bootstrap() {
   initGroups();
   initVoz();
   initEmpleados();
+  initSensores(); // vinculación por código + dashboard + avisos
   initMenuGrid(); // menú de inicio en celdas: muestra una sección por vez
 }
 

@@ -46,6 +46,15 @@ export const CONFIG = {
     // "CHAJA_BOT_WEB_voz.json" en n8n.
     voiceWebhookUrl: "https://n8n2.rededubot.org/webhook/chaja-voice-api",
   },
+  // "Control de sensores" (js/components/sensores.js). Webhook propio, separado
+  // del de texto: acciones "datos", "vincular" y "desvincular" (ver en n8n el
+  // grupo de nodos "S ..." de CHAJA_BOT_WEB). El Arduino NO usa éste: manda sus
+  // lecturas a /webhook/sensoresweb con su código de fábrica.
+  sensores: {
+    webhookUrl: "https://n8n2.rededubot.org/webhook/chaja-sensores-api",
+    // Cada cuánto se vuelve a pedir el panel (el Arduino envía cada 5 min).
+    refrescoMs: 2 * 60 * 1000,
+  },
   // Los tipos de producción (gallinas/pollos/cerdos/huerta) y los eventos de
   // cerdos (produccion/celo/parto/destete/sanidad) están hardcodeados en
   // production.js y en el HTML del modal, en vez de vivir acá: tienen que

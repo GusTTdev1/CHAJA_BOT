@@ -114,6 +114,22 @@ async function aplicarUsuarioAutenticado() {
   if (getNombre() === "Web" && profile.given_name) setNombre(profile.given_name);
 }
 
+/** Devuelve un access token para la API de sensores. Requiere configurar
+ * CONFIG.auth0.audience con el API Identifier de Auth0 y validar ese token
+ * en el backend; el usuario_id enviado desde el navegador no es una prueba
+ * de identidad por sí solo. */
+export async function getAccessToken() {
+  if (!CONFIG.auth0.enabled || !auth0Client) {
+    throw new Error("La autenticación Auth0 debe estar habilitada para controlar sensores.");
+  }
+  if (!CONFIG.auth0.audience) {
+    throw new Error("Falta configurar CONFIG.auth0.audience con el API Identifier de Auth0.");
+  }
+  return auth0Client.getTokenSilently({
+    authorizationParams: { audience: CONFIG.auth0.audience, scope: CONFIG.auth0.scope },
+  });
+}
+
 export async function login() {
   if (!CONFIG.auth0.enabled) {
     // Simulación local para poder demostrar el panel de usuario sin backend.

@@ -421,18 +421,18 @@ body::after {
   padding: 11px 12px;
   border-radius: var(--radius-sm);
   font-size: 15px;
-  color: rgba(245, 242, 234, 0.88);
+  color: #f0e7e7;
   transition: background 0.15s var(--ease);
 }
 .sidebar__link:hover { background: rgba(245, 242, 234, 0.08); }
 .sidebar__link--disabled {
-  color: rgba(245, 242, 234, 0.4);
+  color: #D9E5DC;
   cursor: default;
 }
 .sidebar__link--disabled:hover { background: none; }
 .sidebar__link--disabled .tag-soon {
   background: rgba(245, 242, 234, 0.1);
-  color: rgba(245, 242, 234, 0.5);
+  color: #D9E5DC;
 }
 
 .sidebar__footer {
@@ -1374,3 +1374,36 @@ details[open] summary {
   transition: background 0.15s var(--ease), transform 0.15s var(--ease);
 }
 .section-back:hover { background: var(--forest-dark); transform: translateX(-2px); }
+
+
+/* ==========================================================================\n   Control de Sensores\n   ========================================================================== */
+.sensors { display:flex; flex-direction:column; gap:18px; }
+.sensors__toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.sensors__toolbar--history { margin-top:8px; }
+.sensors__eyebrow { margin:0 0 4px; color:var(--moss); font:600 10px var(--font-mono); letter-spacing:.12em; }
+.sensors__heading { margin:0; font:500 23px var(--font-display); color:var(--forest-dark); }
+.sensors__pair { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; padding:16px; border:1px solid var(--line); border-radius:var(--radius-md); background:var(--surface-alt); }
+.sensors__pair .form-actions { grid-column:1/-1; margin-top:0; }
+.sensors__notice { padding:11px 14px; border-radius:var(--radius-sm); background:var(--sky-light); color:var(--ink-soft); font-size:13px; }
+.sensors__notice--error { background:var(--clay-light); color:#7A3427; }
+.sensors__device-select { min-width:min(100%,250px); margin:0; }
+.sensors__chart-wrap { position:relative; width:100%; min-height:300px; padding:12px; border:1px solid var(--line); border-radius:var(--radius-md); background:var(--surface); }
+.sensors__chart-note { margin:-8px 0 0; color:var(--ink-faint); font-size:12px; }
+.sensors__current { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.sensor-value { min-width:0; padding:13px; border:1px solid var(--line); border-radius:var(--radius-md); background:var(--surface); }
+.sensor-value__top { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:12px; color:var(--ink-soft); font-size:12px; }
+.sensor-value strong { display:block; font:500 27px var(--font-display); color:var(--forest-dark); overflow-wrap:anywhere; }
+.sensor-value small { display:block; margin-top:3px; color:var(--ink-faint); font-size:11px; }
+.sensor-badge { display:inline-flex; align-items:center; gap:4px; border-radius:99px; padding:4px 7px; font-size:10px; line-height:1.2; background:var(--surface-alt); color:var(--ink-soft); }
+.sensor-badge--ok { background:#e2efe0; color:#285a30; }
+.sensor-badge--warning { background:#f7edcf; color:#765414; }
+.sensor-badge--critical { background:#f4dfd9; color:#8b3025; }
+.sensor-badge--unknown { background:var(--surface-alt); color:var(--ink-faint); }
+.sensors__alerts { display:flex; flex-direction:column; gap:8px; }
+.sensor-alert { display:flex; align-items:flex-start; gap:10px; padding:12px 14px; border:1px solid #e8c9c2; border-radius:var(--radius-md); background:#fbefec; }
+.sensor-alert__icon { font-size:20px; }
+.sensor-alert strong { color:#7a3025; font-size:14px; }
+.sensor-alert p { margin:3px 0; color:var(--ink-soft); font-size:13px; }
+.sensor-alert small { color:var(--ink-faint); font-size:11px; }
+.sensors__empty { grid-column:1/-1; margin:0; padding:18px; border:1px dashed var(--line); border-radius:var(--radius-md); color:var(--ink-faint); font-size:13px; text-align:center; }
+@media (max-width:560px) { .sensors__pair,.sensors__current { grid-template-columns:1fr; } .sensors__pair .form-actions { grid-column:auto; } .sensors__chart-wrap { min-height:260px; padding:6px; } .sensor-value__top { flex-direction:column; } }

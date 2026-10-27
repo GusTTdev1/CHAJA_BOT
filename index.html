@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sensores.css">
 </head>
 <body>
 
@@ -71,7 +72,7 @@
     <li><a class="sidebar__link sidebar__link--radio" href="http://185.2.103.239/cept/"><span class="tile__label">Radio El Chaja</span></a></li>
   </ul>
   <div class="sidebar__footer">
-    <p>ChajaBot v0.5.2 · conexión online</p>
+    <p>ChajaBot v0.5.3 · conexión online</p>
   </div>
 </nav>
 
@@ -125,6 +126,7 @@
     <a class="tile tile--leaf" href="#grupos"><img class="tile__img" src="assets/icons/grupos.svg" alt="" width="64" height="64"><span class="tile__label">Grupos de producción</span></a>
     <a class="tile tile--berry" href="#voz"><img class="tile__img" src="assets/icons/voz.svg" alt="" width="64" height="64"><span class="tile__label">Nota de voz</span></a>
     <a class="tile tile--sky" href="#empleados"><img class="tile__img" src="assets/icons/empleados.svg" alt="" width="64" height="64"><span class="tile__label">Empleados</span></a>
+    <a class="tile tile--leaf" href="#sensores"><img class="tile__img" src="assets/icons/sensores.svg" alt="" width="64" height="64"><span class="tile__label">Control de sensores</span></a>
   </nav>
 
   <a class="section-back" id="sectionBack" href="#" hidden>&larr; Inicio</a>
@@ -442,6 +444,91 @@
     </details>
   </section>
 
+  <!-- 9. Control de sensores — vinculación por código de fábrica + dashboard en vivo (js/components/sensores.js) -->
+  <section class="panel" data-section id="sensores" aria-labelledby="sensores-title">
+    <details>
+      <summary class="panel__header">
+        <div>
+          <span class="panel__eyebrow">09 · En vivo</span>
+          <h2 class="panel__title" id="sensores-title">Control de sensores</h2>
+          <p class="panel__desc">Temperatura, humedad, luz y gas de tu galpón en un solo gráfico, con avisos cuando algo se pone crítico.</p>
+        </div>
+      </summary>
+
+      <div class="panel__content" style="padding-top: 1rem;">
+        <p class="sens-cargando" id="sensCargando">Cargando tus sensores…</p>
+        <div class="result-box is-error" id="sensError" role="alert" hidden></div>
+        <button class="btn btn--outline" id="sensReintentar" type="button" hidden>Reintentar</button>
+
+        <!-- Vincular un dispositivo nuevo con su código de fábrica -->
+        <div id="sensVincular" hidden>
+          <form class="stock-form" id="sensForm" novalidate>
+            <div class="field-grid">
+              <label class="field">
+                <span class="field__label">Código del dispositivo</span>
+                <input class="field__input sens-code" type="text" id="sensCodigo" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="19" placeholder="CHJ-XXXX-XXXX-XXXX" required>
+              </label>
+              <label class="field">
+                <span class="field__label">Nombre (opcional)</span>
+                <input class="field__input" type="text" id="sensNombre" maxlength="40" placeholder="Ej: Galpón de pollos">
+              </label>
+            </div>
+            <p class="field__hint">El código de fábrica viene impreso en la etiqueta del dispositivo. Es único: sirve para que sólo vos puedas ver sus datos, y el equipo no envía nada hasta que lo vinculás.</p>
+            <div class="form-actions">
+              <span class="form-status" id="sensFormStatus" role="status"></span>
+              <button class="btn btn--outline" id="sensVolver" type="button" hidden>Volver al panel</button>
+              <button class="btn btn--primary" type="submit">Vincular sensor</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Panel con gráfico y valores actuales -->
+        <div id="sensDashboard" hidden>
+          <div class="sens-toolbar">
+            <label class="field sens-toolbar__field" id="sensDevWrap" hidden>
+              <span class="field__label">Sensor</span>
+              <select class="field__input" id="sensDevSelect"></select>
+            </label>
+            <label class="field sens-toolbar__field">
+              <span class="field__label">Período</span>
+              <select class="field__input" id="sensRango">
+                <option value="6">Últimas 6 horas</option>
+                <option value="24" selected>Últimas 24 horas</option>
+                <option value="72">Últimos 3 días</option>
+                <option value="168">Últimos 7 días</option>
+              </select>
+            </label>
+            <div class="sens-toolbar__actions">
+              <span class="sens-chip" id="sensConexion"></span>
+              <button class="btn btn--outline" id="sensRefrescar" type="button">Actualizar</button>
+              <button class="btn btn--outline" id="sensAvisos" type="button" hidden>Activar avisos</button>
+            </div>
+          </div>
+
+          <div class="sens-alertas" id="sensAlertas" role="alert" hidden></div>
+
+          <figure class="sens-chart">
+            <div class="sens-chart__canvas">
+              <canvas id="sensChart" role="img" aria-label="Gráfico de líneas con temperatura, humedad, luz, gas y horas de luz del sensor"></canvas>
+            </div>
+            <p class="sens-chart__empty" id="sensChartVacio" hidden></p>
+            <figcaption class="sens-chart__nota">Todas las líneas están en una misma escala de 0 a 100 para poder compararlas; pasá el dedo o el mouse por encima para ver el valor real. La luz está invertida (más alto = más luz) y el gas marca 100 % cuando llega al umbral de alerta.</figcaption>
+          </figure>
+
+          <h3 class="sens-subtitle">Valores actuales <span id="sensActualizado"></span></h3>
+          <div class="sens-cards" id="sensCards"></div>
+
+          <p class="field__hint" id="sensAvisosNota"></p>
+          <p class="field__hint">Se actualiza solo cada pocos minutos.</p>
+          <div class="sens-footer">
+            <button class="sens-link" id="sensOtro" type="button">Vincular otro sensor</button>
+            <button class="sens-link sens-link--danger" id="sensDesvincular" type="button">Desvincular este sensor</button>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+
 </main>
 
 <footer class="site-footer" id="siteFooter" hidden>
@@ -646,6 +733,8 @@
   queda en false no molesta — auth.js ni siquiera lo usa en ese caso.
 -->
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+<!-- Chart.js (versión fija) para el gráfico de "Control de sensores"; carga global: window.Chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script type="module" src="js/main.js"></script>
 </body>
 </html>

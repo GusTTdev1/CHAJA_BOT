@@ -1,0 +1,174 @@
+/* ==========================================================================
+   sensores.css — sección "Control de sensores" (js/components/sensores.js)
+   Usa los tokens de style.css; los estados reutilizan la paleta existente:
+   ok = leaf · info = sky · warn = wheat · crit = clay
+   ========================================================================== */
+
+.sens-cargando { color: var(--ink-soft); font-size: 14px; margin: 0; }
+.sens-code { font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* ---------- barra de herramientas ---------- */
+.sens-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+  margin-bottom: 14px;
+}
+.sens-toolbar__field { margin-bottom: 0; min-width: 160px; }
+.sens-toolbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.sens-toolbar__actions .btn { padding: 9px 16px; }
+
+/* chips y badges comparten la misma lógica de color por nivel */
+.sens-chip,
+.sens-badge {
+  --nv-fg: var(--ink-soft);
+  --nv-bg: var(--surface-alt);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--nv-fg);
+  background: var(--nv-bg);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+}
+.sens-chip svg,
+.sens-badge svg { width: 18px; height: 18px; flex: none; }
+.sens-chip { align-items: center; padding: 7px 14px; font-size: 13px; }
+.sens-chip:empty { display: none; }
+.sens-chip--ok,   .sens-badge--ok   { --nv-fg: #285A30; --nv-bg: var(--leaf-light); }
+.sens-chip--info, .sens-badge--info { --nv-fg: #1F4B63; --nv-bg: var(--sky-light); }
+.sens-chip--warn, .sens-badge--warn { --nv-fg: #7A5614; --nv-bg: var(--wheat-light); }
+.sens-chip--crit, .sens-badge--crit { --nv-fg: #7A3427; --nv-bg: var(--clay-light); }
+
+/* ---------- alertas críticas ---------- */
+.sens-alertas {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background: var(--clay-light);
+  border: 1.5px solid var(--clay);
+  border-radius: var(--radius-md);
+  color: #7A3427;
+}
+.sens-alertas__item { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.4; }
+.sens-alertas__item svg { width: 22px; height: 22px; flex: none; }
+.sens-alertas__item strong { display: block; }
+
+/* ---------- gráfico ---------- */
+.sens-chart {
+  margin: 0 0 22px;
+  padding: 14px 14px 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+.sens-chart__canvas { position: relative; height: 340px; }
+.sens-chart__empty { margin: 0; padding: 40px 12px; text-align: center; color: var(--ink-soft); font-size: 14px; }
+.sens-chart__nota { margin: 10px 2px 0; font-size: 12.5px; line-height: 1.45; color: var(--ink-faint); }
+
+/* ---------- valores actuales ---------- */
+.sens-subtitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--forest-dark);
+}
+.sens-subtitle span { font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--ink-soft); }
+.sens-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.sens-vacio { grid-column: 1 / -1; margin: 0; color: var(--ink-soft); font-size: 14px; }
+.sens-card {
+  --nv-fg: var(--ink-soft);
+  --nv-line: var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 14px 14px;
+  background: var(--surface);
+  border: 1.5px solid var(--nv-line);
+  border-left: 5px solid var(--nv-fg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+.sens-card--ok   { --nv-fg: var(--leaf); }
+.sens-card--info { --nv-fg: var(--sky); }
+.sens-card--warn { --nv-fg: var(--wheat); }
+.sens-card--crit { --nv-fg: var(--clay); --nv-line: var(--clay); }
+.sens-card__head { display: flex; align-items: center; gap: 8px; color: var(--ink-soft); }
+.sens-card__icon { width: 20px; height: 20px; flex: none; }
+.sens-card__name { margin: 0; font-size: 13.5px; font-weight: 700; letter-spacing: 0.02em; color: var(--ink-soft); }
+.sens-card__value { margin: 0; display: flex; align-items: baseline; gap: 6px; }
+.sens-card__num { font-family: var(--font-display); font-size: 36px; font-weight: 600; line-height: 1; color: var(--ink); }
+.sens-card__unit { font-size: 15px; font-weight: 600; color: var(--ink-soft); }
+.sens-card__sub { margin: 0; font-size: 12px; line-height: 1.35; color: var(--ink-faint); }
+.sens-badge {
+  margin: 4px 0 0;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  line-height: 1.35;
+}
+.sens-badge span { min-width: 0; }
+
+/* ---------- pie ---------- */
+.sens-footer { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; margin-top: 6px; }
+.sens-link {
+  padding: 4px 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--forest);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.sens-link--danger { color: var(--clay); }
+.sens-link:disabled { opacity: 0.5; cursor: progress; }
+
+/* ---------- punto rojo en la celda del menú de inicio cuando hay una alerta ---------- */
+.tile { position: relative; }
+.tile.has-alert::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 14px;
+  height: 14px;
+  background: var(--clay);
+  border: 2px solid var(--surface);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 0 0 rgba(155, 74, 59, 0.5);
+  animation: sens-pulso 1.8s ease-out infinite;
+}
+@keyframes sens-pulso {
+  70%  { box-shadow: 0 0 0 10px rgba(155, 74, 59, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(155, 74, 59, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .tile.has-alert::after { animation: none; } }
+
+@media (max-width: 640px) {
+  .sens-toolbar__field { flex: 1 1 140px; }
+  .sens-toolbar__actions { margin-left: 0; width: 100%; }
+  .sens-chart { padding: 10px 8px 8px; }
+  .sens-chart__canvas { height: 300px; }
+  .sens-card__num { font-size: 32px; }
+}

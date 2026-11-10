@@ -103,7 +103,9 @@ async function aplicarUsuarioAutenticado() {
   store.setUser({
     isAuthenticated: true,
     usuarioId: profile.sub, // ej: "google-oauth2|1029384756" → usuario_id real
-    name: profile.name || profile.nickname || "Productor/a",
+    name: (profile.name && profile.name !== profile.email)
+      ? profile.name
+      : (profile.given_name || (profile.email ? profile.email.split("@")[0] : "Productor/a")),
     email: profile.email || null,
     picture: profile.picture || null,
   });

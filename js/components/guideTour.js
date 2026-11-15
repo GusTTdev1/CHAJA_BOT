@@ -1,7 +1,7 @@
 const GUIDE_CONTENT = {
   main: [
     {
-      img: '/assets/icons/registrar.svg',
+      img: 'assets/icons/registrar.svg',
       titulo: 'Registrar producción',
       texto: 'Cargá lo que tu familia produjo hoy (huevos, verduras, carne, etc).'
     },

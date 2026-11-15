@@ -725,16 +725,10 @@
 
 <!-- Contenedor de notificaciones -->
 <div class="toast-stack" id="toastStack" aria-live="polite"></div>
-
-<!--
-  SDK de Auth0 (carga global, expone window.createAuth0Client). Tiene que
-  cargarse ANTES que js/main.js: los scripts normales corren en orden antes
-  que los módulos, así que basta con dejarlo justo arriba. Si CONFIG.auth0.enabled
-  queda en false no molesta — auth.js ni siquiera lo usa en ese caso.
--->
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 <!-- Chart.js (versión fija) para el gráfico de "Control de sensores"; carga global: window.Chart -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script type="module" src="js/main.js"></script>
+<script type="module" src="js/components/guideTour.js"></script>
 </body>
 </html>

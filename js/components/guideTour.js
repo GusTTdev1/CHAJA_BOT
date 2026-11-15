@@ -1,27 +1,4 @@
-/**
- * guideTour.js
- * Botón flotante "Guía de usuario" (ícono de lentes) + modal tipo diapositivas.
- *
- * Comportamiento:
- *  - En la pantalla principal (sin sección abierta, hash vacío o "#"/"#menu"):
- *    muestra diapositivas básicas de QUÉ hace cada botón de la grilla.
- *  - Dentro de una sección (ej. "#produccion"): muestra diapositivas de
- *    CÓMO usar esa opción puntual (paso a paso).
- *
- * No depende de ningún framework. Se auto-inicializa al importarse.
- * Ajustá las claves de GUIDE_CONTENT para que coincidan EXACTO con los
- * ids de sección que usa tu menuGrid.js (location.hash).
- */
-
-// ---------------------------------------------------------------------
-// 1) CONTENIDO DE LAS GUÍAS
-//    Cada entrada es un array de diapositivas: { img, titulo, texto }
-//    "img" puede ser una ruta (assets/...) o null si todavía no tenés imagen.
-// ---------------------------------------------------------------------
-
 const GUIDE_CONTENT = {
-  // Diapositivas que se ven en la pantalla principal: una por cada botón
-  // de la grilla, usando el mismo ícono que ya tiene ese botón.
   main: [
     {
       img: 'assets/icons/registrar-produccion.png',
@@ -70,12 +47,6 @@ const GUIDE_CONTENT = {
     }
   ],
 
-  // Diapositivas contextuales por sección: se muestran cuando el usuario
-  // está DENTRO de esa sección y toca el botón de lentes.
-  // OJO: la clave (ej. "produccion") tiene que ser EXACTAMENTE igual al
-  // id que tu menuGrid.js pone en el hash de la URL (#produccion, #stock...).
-  // Revisá tu código y renombrá las claves si no coinciden.
-
   produccion: [
     { img: null, titulo: 'Elegí la categoría', texto: 'Tocá qué tipo de producción querés cargar: gallinas, pollos, cerdos, huerta, etc.' },
     { img: null, titulo: 'Escribí la cantidad', texto: 'Indicá cuánto produjiste hoy en esa categoría (por ejemplo, cantidad de huevos).' },
@@ -88,7 +59,7 @@ const GUIDE_CONTENT = {
     { img: null, titulo: 'Alta o baja', texto: 'Después, cada vez que compres, vendas o se pierda un animal, sumá o restá acá.' }
   ],
 
-  balance: [
+  consultas: [
     { img: null, titulo: 'Elegí el período', texto: 'Seleccioná el rango de fechas que querés revisar.' },
     { img: null, titulo: 'Mirá el resumen', texto: 'La app calcula los costos (alimento y mano de obra) y lo compara con lo producido.' },
     { img: null, titulo: 'Precio sugerido', texto: 'También te muestra un precio de venta sugerido según tus costos.' }
@@ -109,7 +80,7 @@ const GUIDE_CONTENT = {
     { img: null, titulo: 'Unirte o crear uno', texto: 'Podés sumarte a un grupo existente o armar uno nuevo.' }
   ],
 
-  'nota-voz': [
+  'voz': [
     { img: null, titulo: 'Grabá tu audio', texto: 'Apretá el botón de grabar y contá, con tus palabras, lo que produjiste hoy.' },
     { img: null, titulo: 'Esperá la transcripción', texto: 'El sistema escucha el audio y lo transforma en un registro automáticamente.' },
     { img: null, titulo: 'Revisá antes de guardar', texto: 'Fijate que esté bien interpretado antes de confirmar.' }
@@ -144,7 +115,6 @@ const GUIDE_CONTENT = {
   ]
 };
 
-// Texto que se muestra si una sección todavía no tiene guía cargada
 const FALLBACK_SLIDE = [
   {
     img: null,
@@ -152,10 +122,6 @@ const FALLBACK_SLIDE = [
     texto: 'Todavía no agregamos la explicación de esta sección. ¡Volvé pronto!'
   }
 ];
-
-// ---------------------------------------------------------------------
-// 2) ESTILOS
-// ---------------------------------------------------------------------
 
 const STYLE_ID = 'guide-tour-styles';
 
@@ -288,10 +254,6 @@ function injectStyles() {
   document.head.appendChild(style);
 }
 
-// ---------------------------------------------------------------------
-// 3) LÓGICA DEL COMPONENTE
-// ---------------------------------------------------------------------
-
 let currentSlides = [];
 let currentIndex = 0;
 
@@ -355,7 +317,6 @@ function buildDom() {
   btn.addEventListener('click', openGuide);
   document.body.appendChild(btn);
 
-  // Overlay / modal
   const overlay = document.createElement('div');
   overlay.className = 'guide-tour-overlay';
   overlay.id = 'guide-tour-overlay';

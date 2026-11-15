@@ -1,47 +1,47 @@
 const GUIDE_CONTENT = {
   main: [
     {
-      img: 'assets/icons/registrar-produccion.png',
+      img: 'assets/icons/registrar.svg',
       titulo: 'Registrar producción',
       texto: 'Cargá lo que tu familia produjo hoy (huevos, verduras, carne, etc).'
     },
     {
-      img: 'assets/icons/stock.png',
+      img: 'assets/icons/stock.svg',
       titulo: 'Alta / Baja de stock',
       texto: 'Sumá o descontá animales e insumos de lo que tenés actualmente.'
     },
     {
-      img: 'assets/icons/balance.png',
+      img: 'assets/icons/balance.svg',
       titulo: 'Balance y resúmenes',
       texto: 'Mirá cuánto ganaste o gastaste en un período, con costos y precios.'
     },
     {
-      img: 'assets/icons/actividad.png',
+      img: 'assets/icons/actividad.svg',
       titulo: 'Actividad por fecha',
       texto: 'Consultá todo lo que se registró en un día puntual.'
     },
     {
-      img: 'assets/icons/graficos.png',
+      img: 'assets/icons/graficos.svg',
       titulo: 'Gráficos',
       texto: 'Visualizá tu producción en gráficos fáciles de leer.'
     },
     {
-      img: 'assets/icons/grupos.png',
+      img: 'assets/icons/grupos.svg',
       titulo: 'Grupos de producción',
       texto: 'Sumate o armá un grupo junto a otras familias productoras.'
     },
     {
-      img: 'assets/icons/nota-voz.png',
+      img: 'assets/icons/voz.svg',
       titulo: 'Nota de voz',
       texto: 'Grabá un audio contando lo que produjiste y el sistema lo carga solo.'
     },
     {
-      img: 'assets/icons/empleados.png',
+      img: 'assets/icons/empleados.svg',
       titulo: 'Empleados',
       texto: 'Si tenés empleados, cargá cuántos son y su sueldo mensual.'
     },
     {
-      img: 'assets/icons/sensores.png',
+      img: 'assets/icons/sensores.svg',
       titulo: 'Control de sensores',
       texto: 'Mirá los datos del sensor de tu producción (temperatura, luz, etc).'
     }

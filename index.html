@@ -451,12 +451,12 @@
         <div>
           <span class="panel__eyebrow">09 · En vivo</span>
           <h2 class="panel__title" id="sensores-title">Control de sensores</h2>
-          <p class="panel__desc">Temperatura, humedad, luz y gas de tu galpón en un solo gráfico, con avisos cuando algo se pone crítico.</p>
+          <p class="panel__desc">Temperatura, humedad, luz y gas de tu galpón en un solo gráfico, con avisos cuando algo se pone crítico. Acá también vinculás tu equipo de voz.</p>
         </div>
       </summary>
 
       <div class="panel__content" style="padding-top: 1rem;">
-        <p class="sens-cargando" id="sensCargando">Cargando tus sensores…</p>
+        <p class="sens-cargando" id="sensCargando">Cargando tus dispositivos…</p>
         <div class="result-box is-error" id="sensError" role="alert" hidden></div>
         <button class="btn btn--outline" id="sensReintentar" type="button" hidden>Reintentar</button>
 
@@ -470,14 +470,14 @@
               </label>
               <label class="field">
                 <span class="field__label">Nombre (opcional)</span>
-                <input class="field__input" type="text" id="sensNombre" maxlength="40" placeholder="Ej: Galpón de pollos">
+                <input class="field__input" type="text" id="sensNombre" maxlength="40" placeholder="Ej: Galpón de pollos o Cocina">
               </label>
             </div>
-            <p class="field__hint">El código de fábrica viene impreso en la etiqueta del dispositivo. Es único: sirve para que sólo vos puedas ver sus datos, y el equipo no envía nada hasta que lo vinculás.</p>
+            <p class="field__hint">Sirve para sensores y para el equipo de voz. El código de fábrica viene impreso en la etiqueta del dispositivo. Es único: sirve para que sólo vos puedas ver sus datos, y el equipo no envía nada hasta que lo vinculás.</p>
             <div class="form-actions">
               <span class="form-status" id="sensFormStatus" role="status"></span>
               <button class="btn btn--outline" id="sensVolver" type="button" hidden>Volver al panel</button>
-              <button class="btn btn--primary" type="submit">Vincular sensor</button>
+              <button class="btn btn--primary" type="submit">Vincular dispositivo</button>
             </div>
           </form>
         </div>
@@ -524,6 +524,13 @@
             <button class="sens-link" id="sensOtro" type="button">Vincular otro sensor</button>
             <button class="sens-link sens-link--danger" id="sensDesvincular" type="button">Desvincular este sensor</button>
           </div>
+        </div>
+
+        <!-- Equipos de voz vinculados (la carga por voz se hace hablándole al equipo, no desde acá) -->
+        <div class="sens-voz" id="sensVoz" hidden>
+          <h3 class="sens-subtitle">Equipos de voz</h3>
+          <ul class="sens-voz__list" id="sensVozLista"></ul>
+          <p class="field__hint">Para cargar la producción hablando: mantené apretado el botón del equipo y decí «cargar datos». Lo que cargues aparece en Balance, Actividad y Gráficos.</p>
         </div>
       </div>
     </details>

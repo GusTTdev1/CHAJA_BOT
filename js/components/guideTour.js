@@ -100,12 +100,17 @@ const GUIDE_CONTENT = {
     {
       img: 'assets/icons/sensor-codigo.svg',
       titulo: 'Buscá el código',
-      texto: 'En una esquina del aparato vas a encontrar un código con el formato CHJ-XXXX-XXXX.'
+      texto: 'En la etiqueta del aparato vas a encontrar un código con el formato CHJ-XXXX-XXXX-XXXX.'
     },
     {
       img: null,
       titulo: 'Vinculalo a tu familia',
       texto: 'Escribí ese código en esta sección para que los datos del sensor se guarden en tu cuenta.'
+    },
+    {
+      img: null,
+      titulo: 'Equipo de voz',
+      texto: 'El equipo de voz se vincula igual: escribí su código acá. Después mantené apretado su botón y decí "cargar datos" para registrar la producción hablando.'
     },
     {
       img: null,
@@ -134,7 +139,9 @@ function injectStyles() {
       position: fixed;
       left: 20px;
       bottom: 20px;
-      z-index: 9998;
+      /* Debe quedar POR DEBAJO del menú lateral (50), su scrim (49) y los modales (60):
+         antes valía 9998 y se dibujaba encima del menú. El modal de la guía sigue en 9999. */
+      z-index: 45;
       display: flex;
       flex-direction: column;
       align-items: center;

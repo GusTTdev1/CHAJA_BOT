@@ -126,6 +126,7 @@ const ICONOS = {
   gota: ["M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"],
   sol: ["M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z", "M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"],
   viento: ["M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"],
+  micro: ["M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z", "M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"],
   reloj: ["M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z", "M12 6v6l4 2"],
   ok: ["M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z", "M8 12.5l3 3 5-6"],
   info: ["M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z", "M12 16v-4M12 8h.01"],
@@ -162,7 +163,8 @@ function el(tag, clase, texto) {
 // Estado del módulo
 // ----------------------------------------------------------------------------
 const S = {
-  dispositivos: [], // [{ ref, nombre, vinculado_en }]
+  dispositivos: [], // sensores: [{ ref, nombre, vinculado_en }]
+  voz: [], // equipos de voz vinculados (sólo se listan; no tienen lecturas)
   lecturas: {}, // ref → [lectura] dentro del período elegido
   ultima: {}, // ref → última lectura conocida (aunque sea más vieja que el período)
   ref: null, // sensor seleccionado
@@ -348,6 +350,45 @@ function mostrarVista() {
   $("sensVincular").hidden = !S.cargado || (hayDisp && !S.verVinculo);
   $("sensDashboard").hidden = !S.cargado || !hayDisp || S.verVinculo;
   $("sensVolver").hidden = !hayDisp;
+  renderVoz();
+}
+
+function renderVoz() {
+  const box = $("sensVoz");
+  const lista = $("sensVozLista");
+  box.hidden = !S.cargado || S.voz.length === 0;
+  lista.replaceChildren(
+    ...S.voz.map((d) => {
+      const li = el("li", "sens-voz__item");
+      const nombre = el("span", "sens-voz__name");
+      nombre.appendChild(icono("micro"));
+      nombre.appendChild(el("span", "", d.nombre));
+      nombre.appendChild(el("small", "", "Equipo de voz"));
+      li.appendChild(nombre);
+
+      // Desvincular con doble toque, igual que el sensor
+      const btn = el("button", "sens-link sens-link--danger", "Desvincular");
+      btn.type = "button";
+      let armado = null;
+      btn.addEventListener("click", async () => {
+        if (!armado) {
+          btn.textContent = "¿Seguro? Tocá de nuevo";
+          armado = setTimeout(() => { armado = null; btn.textContent = "Desvincular"; }, 4000);
+          return;
+        }
+        clearTimeout(armado);
+        armado = null;
+        btn.disabled = true;
+        const res = await llamar("desvincular", { ref: d.ref });
+        btn.disabled = false;
+        btn.textContent = "Desvincular";
+        showToast(res.mensaje || (res.ok ? "Equipo desvinculado" : "No se pudo desvincular"), { type: res.ok ? "success" : "error" });
+        if (res.ok) { S.cargado = false; mostrarVista(); cargar(); }
+      });
+      li.appendChild(btn);
+      return li;
+    })
+  );
 }
 
 function renderSelector() {
@@ -559,6 +600,7 @@ async function cargar({ manual = false } = {}) {
 
   S.skew = Date.now() - (res.ahora || Date.now());
   S.dispositivos = res.dispositivos || [];
+  S.voz = res.voz || [];
   S.lecturas = res.lecturas || {};
   S.ultima = res.ultima || {};
   S.cargado = true;
@@ -585,7 +627,7 @@ function detener() {
 function reiniciar() {
   detener();
   S.cargaId++;
-  Object.assign(S, { dispositivos: [], lecturas: {}, ultima: {}, ref: null, cargado: false, verVinculo: false });
+  Object.assign(S, { dispositivos: [], voz: [], lecturas: {}, ultima: {}, ref: null, cargado: false, verVinculo: false });
   if (S.chart) { S.chart.destroy(); S.chart = null; }
   document.querySelectorAll('.tile[href="#sensores"]').forEach((t) => t.classList.remove("has-alert"));
   document.title = document.title.replace(/^\(!\) /, "");

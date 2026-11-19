@@ -213,7 +213,7 @@ export function initVoz() {
     formStatus.classList.remove("is-error");
     formStatus.textContent = "Verificando stock actual…";
 
-    const { pasos, error } = await armarPasos(interpretado);
+    const { pasos, antes = [], error } = await armarPasos(interpretado);
     if (error) {
       confirmBtn.disabled = false;
       retryBtn.disabled = false;
@@ -224,7 +224,24 @@ export function initVoz() {
 
     formStatus.textContent = "Guardando en Chaja Bot…";
 
+    // 1) pasos previos (ajuste de stock por diferencia), si los hay; si alguno falla no se guarda nada más
+    const mensajesPrevios = [];
+    for (const previo of antes) {
+      const rPrev = await runFlow(previo);
+      if (!rPrev.ok) {
+        confirmBtn.disabled = false;
+        retryBtn.disabled = false;
+        formStatus.textContent = "";
+        resultBox.hidden = false;
+        resultBox.classList.add("is-error");
+        resultBox.textContent = rPrev.mensaje;
+        return;
+      }
+      mensajesPrevios.push(rPrev.mensaje);
+    }
+    // 2) el registro principal
     const res = await runFlow(pasos);
+    if (res.ok && mensajesPrevios.length) res.mensaje = [...mensajesPrevios, res.mensaje].join("\n\n");
 
     confirmBtn.disabled = false;
     retryBtn.disabled = false;
@@ -259,7 +276,8 @@ export function initVoz() {
 //   lechones_vivos: number         (evento parto)
 //   lechones_destete: number       (evento destete)
 //   tratamiento: string, costo_sanidad: number   (evento sanidad)
-//   direccion_stock: "alta" | "baja", cantidad_stock: number
+//   direccion_stock: "alta" | "baja" | "conteo", cantidad_stock: number
+//                                  ("conteo": cantidad_stock es el TOTAL que hay ahora; el sistema registra la diferencia)
 //   fecha: "dd/mm/aaaa"            (actividad)
 //   consulta: "balance" | "resumen" | "info"
 //   grafico_tipo: "barras" | "torta" | "linea", grafico_categoria: "produccion" | "economia"
@@ -276,7 +294,7 @@ function describirInterpretacion(d) {
   if (d.intento === "registrar_produccion") {
     const nombresTipo = { gallinas: "Gallinas", pollos: "Pollos", cerdos: "Cerdos", huerta: "Huerta" };
     filas.push(`Registrar producción · ${nombresTipo[d.tipo_produccion] || "?"}${d.evento && d.evento !== "produccion" ? " · " + d.evento : ""}`);
-    if (d.cantidad_animales != null) filas.push(`Cantidad: ${d.cantidad_animales}`);
+    if (d.cantidad_animales != null) filas.push(`Cantidad total que tenés: ${d.cantidad_animales}`);
     if (d.alimento_kg != null) filas.push(`Alimento consumido: ${d.alimento_kg} kg`);
     if (d.precio_alimento_kg != null) filas.push(`Precio del alimento: $${d.precio_alimento_kg}/kg`);
     if (d.produccion_hoy != null) filas.push(`Producción de hoy: ${d.produccion_hoy}`);
@@ -286,8 +304,11 @@ function describirInterpretacion(d) {
     if (d.tratamiento) filas.push(`Tratamiento: ${d.tratamiento}`);
     if (d.costo_sanidad != null) filas.push(`Costo del tratamiento: $${d.costo_sanidad}`);
   } else if (d.intento === "ajuste_stock") {
-    filas.push(`${d.direccion_stock === "baja" ? "Baja" : "Alta"} de stock · ${d.tipo_produccion || "?"}`);
-    if (d.cantidad_stock != null) filas.push(`Cantidad: ${d.cantidad_stock}`);
+    const nombreMov = d.direccion_stock === "baja" ? "Baja" : d.direccion_stock === "conteo" ? "Conteo" : "Alta";
+    filas.push(`${nombreMov} de stock · ${d.tipo_produccion || "?"}`);
+    if (d.cantidad_stock != null) {
+      filas.push(d.direccion_stock === "conteo" ? `Total que tenés ahora: ${d.cantidad_stock}` : `Cantidad: ${d.cantidad_stock}`);
+    }
   } else if (d.intento === "actividad") {
     filas.push(`Consultar actividad del ${d.fecha || "?"}`);
   } else if (d.intento === "consulta") {
@@ -310,6 +331,7 @@ async function armarPasos(d) {
     }
 
     const pasos = ["registrar", d.tipo_produccion];
+    const antes = []; // secuencias que se envían ANTES de "pasos" (ej.: el conteo de stock)
     const eventosValidos = ["produccion", "celo", "parto", "destete", "sanidad"];
     const evento = d.tipo_produccion === "cerdos"
       ? (eventosValidos.includes(d.evento) ? d.evento : "produccion")
@@ -347,10 +369,17 @@ async function armarPasos(d) {
           return { error: `Es tu primer registro de ${d.tipo_produccion} y no quedó clara la cantidad total — mencionala en la grabación.` };
         }
         pasos.push(cantidad);
+      } else {
+        // Ya había stock cargado: la cantidad NO va dentro de la secuencia de producción (el Router ya no la
+        // pregunta y mandarla desalinearía el paso siguiente). Pero si la persona dijo cuántos tiene hoy y
+        // es distinto de lo que figura, se registra primero la DIFERENCIA con un "conteo"
+        // (ej.: figuraban 25, hoy dice 15 => baja de 10), igual que el modo Conteo de Alta / Baja de stock.
+        const dicha = num(d.cantidad_animales);
+        const actual = Number(stockActual[d.tipo_produccion]);
+        if (d.cantidad_animales != null && !isNaN(dicha) && dicha >= 0 && Number.isFinite(actual) && dicha !== actual) {
+          antes.push(["conteo", d.tipo_produccion, dicha, "no"]);
+        }
       }
-      // si ya había stock cargado, la cantidad total NO se manda (aunque
-      // Groq la haya entendido): el Router ya no la pregunta y mandarla
-      // igual desalinearía el paso siguiente.
 
       if (d.tipo_produccion !== "huerta") {
         const alimento = num(d.alimento_kg ?? 0);
@@ -367,15 +396,16 @@ async function armarPasos(d) {
     }
 
     pasos.push(d.observacion ? d.observacion : "no");
-    return { pasos };
+    return { pasos, antes };
   }
 
   if (d.intento === "ajuste_stock") {
     const tiposValidos = ["gallinas", "pollos", "cerdos", "huerta"];
     if (!tiposValidos.includes(d.tipo_produccion)) return { error: "No quedó claro el tipo de producción." };
-    if (d.direccion_stock !== "alta" && d.direccion_stock !== "baja") return { error: "No quedó claro si es alta o baja de stock." };
+    if (!["alta", "baja", "conteo"].includes(d.direccion_stock)) return { error: "No quedó claro si es alta, baja o conteo de stock." };
     const cantidad = num(d.cantidad_stock);
-    if (isNaN(cantidad) || cantidad <= 0) return { error: "No quedó clara la cantidad." };
+    // en un conteo 0 es válido (ej.: "vendí todas"); en alta/baja no
+    if (isNaN(cantidad) || cantidad < 0 || (d.direccion_stock !== "conteo" && cantidad === 0)) return { error: "No quedó clara la cantidad." };
     return { pasos: [d.direccion_stock, d.tipo_produccion, cantidad, d.observacion || "no"] };
   }
 

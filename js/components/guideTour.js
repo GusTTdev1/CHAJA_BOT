@@ -56,7 +56,8 @@ const GUIDE_CONTENT = {
   stock: [
     { img: null, titulo: '¿Qué es el stock?', texto: 'Es la cantidad total que tenés hoy de cada categoría (no lo que producís por día).' },
     { img: null, titulo: 'Carga inicial', texto: 'Si es la primera vez que usás esta sección, cargá el total que tenés ahora mismo.' },
-    { img: null, titulo: 'Alta o baja', texto: 'Después, cada vez que compres, vendas o se pierda un animal, sumá o restá acá.' }
+    { img: null, titulo: 'Alta o baja', texto: 'Después, cada vez que compres, vendas o se pierda un animal, sumá o restá acá.' },
+    { img: null, titulo: 'Conteo', texto: 'Si preferís decir cuántos tenés ahora (por ejemplo, de 25 pasaste a 15), elegí Conteo: el sistema calcula la diferencia y la registra como una baja de 10.' }
   ],
 
   consultas: [

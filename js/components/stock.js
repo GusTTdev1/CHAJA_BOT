@@ -27,7 +27,9 @@ export function initStock() {
       btn.classList.toggle("is-active", active);
       btn.setAttribute("aria-selected", String(active));
     });
-    submitLabel.textContent = dir === "alta" ? "Registrar alta" : "Registrar baja";
+    submitLabel.textContent = dir === "alta" ? "Registrar alta" : dir === "baja" ? "Registrar baja" : "Registrar conteo";
+    // Conteo = total que hay AHORA (el sistema calcula la diferencia con lo cargado); alta/baja = cantidad que se suma o resta
+    qtyLabel.textContent = dir === "conteo" ? "Cuántos tenés ahora (total)" : "Cantidad";
   }
 
   toggle.addEventListener("click", (e) => {
@@ -40,7 +42,10 @@ export function initStock() {
     const tipo = typeSelect.value;
     const qty = Number(qtyInput.value);
 
-    if (!tipo || !qty || qty <= 0) {
+    const esConteo = direction === "conteo";
+    // En un conteo 0 es válido (ej.: vendí todo); en alta/baja no
+    const cantidadInvalida = qtyInput.value.trim() === "" || isNaN(qty) || qty < 0 || (!esConteo && qty === 0);
+    if (!tipo || cantidadInvalida) {
       status.textContent = "Completá tipo y cantidad.";
       status.classList.add("is-error");
       return;
@@ -62,7 +67,7 @@ export function initStock() {
     resultBox.textContent = res.mensaje;
 
     if (res.ok) {
-      showToast(direction === "alta" ? "Alta registrada" : "Baja registrada");
+      showToast(direction === "alta" ? "Alta registrada" : direction === "baja" ? "Baja registrada" : "Conteo registrado");
       form.reset();
       qtyLabel.textContent = "Cantidad";
       setDirection("alta");

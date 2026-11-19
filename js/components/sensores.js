@@ -173,6 +173,7 @@ const S = {
   timer: null,
   cargaId: 0,
   cargado: false,
+  falloCarga: false, // la última consulta al servidor falló y todavía no hay datos: igual se puede vincular
   verVinculo: false,
   chart: null,
   actualizado: null,
@@ -346,8 +347,10 @@ function procesarAlertas() {
 // ----------------------------------------------------------------------------
 function mostrarVista() {
   const hayDisp = S.dispositivos.length > 0;
-  $("sensCargando").hidden = S.cargado;
-  $("sensVincular").hidden = !S.cargado || (hayDisp && !S.verVinculo);
+  // Si la carga falló y no hay datos previos, no dejamos la pantalla trabada en "Cargando…":
+  // se muestra el error (con Reintentar) y el formulario para vincular sigue disponible.
+  $("sensCargando").hidden = S.cargado || S.falloCarga;
+  $("sensVincular").hidden = S.cargado ? (hayDisp && !S.verVinculo) : !S.falloCarga;
   $("sensDashboard").hidden = !S.cargado || !hayDisp || S.verVinculo;
   $("sensVolver").hidden = !hayDisp;
   renderVoz();
@@ -383,7 +386,7 @@ function renderVoz() {
         btn.disabled = false;
         btn.textContent = "Desvincular";
         showToast(res.mensaje || (res.ok ? "Equipo desvinculado" : "No se pudo desvincular"), { type: res.ok ? "success" : "error" });
-        if (res.ok) { S.cargado = false; mostrarVista(); cargar(); }
+        if (res.ok) { S.cargado = false; S.falloCarga = false; mostrarVista(); cargar(); }
       });
       li.appendChild(btn);
       return li;
@@ -590,12 +593,14 @@ async function cargar({ manual = false } = {}) {
     // Si ya había datos, no los tapamos: sólo avisamos que no se pudo refrescar
     err.hidden = false;
     err.textContent = res.mensaje || "No se pudieron obtener los datos del sensor.";
+    S.falloCarga = true;
     $("sensCargando").hidden = true;
     $("sensReintentar").hidden = S.cargado; // sin datos previos: ofrecemos reintentar a mano
     mostrarVista();
     return;
   }
   err.hidden = true;
+  S.falloCarga = false;
   $("sensReintentar").hidden = true;
 
   S.skew = Date.now() - (res.ahora || Date.now());
@@ -627,7 +632,7 @@ function detener() {
 function reiniciar() {
   detener();
   S.cargaId++;
-  Object.assign(S, { dispositivos: [], voz: [], lecturas: {}, ultima: {}, ref: null, cargado: false, verVinculo: false });
+  Object.assign(S, { dispositivos: [], voz: [], lecturas: {}, ultima: {}, ref: null, cargado: false, falloCarga: false, verVinculo: false });
   if (S.chart) { S.chart.destroy(); S.chart = null; }
   document.querySelectorAll('.tile[href="#sensores"]').forEach((t) => t.classList.remove("has-alert"));
   document.title = document.title.replace(/^\(!\) /, "");
@@ -695,7 +700,7 @@ export function initSensores() {
     showToast(res.mensaje || "Sensor vinculado");
     form.reset();
     S.verVinculo = false;
-    S.cargado = false;
+    S.cargado = false; S.falloCarga = false;
     mostrarVista();
     cargar();
   });
@@ -729,7 +734,7 @@ export function initSensores() {
     const res = await llamar("desvincular", { ref: S.ref });
     btnDes.disabled = false;
     showToast(res.mensaje || (res.ok ? "Sensor desvinculado" : "No se pudo desvincular"), { type: res.ok ? "success" : "error" });
-    if (res.ok) { S.ref = null; S.cargado = false; mostrarVista(); cargar(); }
+    if (res.ok) { S.ref = null; S.cargado = false; S.falloCarga = false; mostrarVista(); cargar(); }
   });
 
   // Al volver a la pestaña, si pasó más de un minuto desde la última carga, refrescamos

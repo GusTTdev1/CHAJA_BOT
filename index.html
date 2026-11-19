@@ -164,7 +164,7 @@
         <div>
           <span class="panel__eyebrow">02 · En vivo</span>
           <h2 class="panel__title" id="stock-title">Alta / Baja de stock</h2>
-          <p class="panel__desc">Ajuste manual de existencias (ej: mortandad, compra o venta puntual). Se guarda directo en el cuaderno de Chaja Bot.</p>
+          <p class="panel__desc">Ajuste manual de existencias (ej: mortandad, compra o venta puntual). Con <strong>Conteo</strong> decís cuántos tenés ahora y el sistema calcula la diferencia. Se guarda directo en el cuaderno de Chaja Bot.</p>
         </div>
       </summary>
 
@@ -173,6 +173,7 @@
         <div class="segmented" id="stockDirectionToggle" role="tablist" aria-label="Tipo de movimiento" style="margin-bottom: 1.5rem;">
           <button class="segmented__btn is-active" role="tab" aria-selected="true" data-direction="alta">Alta</button>
           <button class="segmented__btn" role="tab" aria-selected="false" data-direction="baja">Baja</button>
+          <button class="segmented__btn" role="tab" aria-selected="false" data-direction="conteo">Conteo</button>
         </div>
 
         <form class="stock-form" id="stockForm">

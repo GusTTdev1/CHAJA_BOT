@@ -13,6 +13,7 @@ import { initIdentidad } from "./components/identidad.js";
 import { initProduction } from "./components/production.js";
 import { initStock } from "./components/stock.js";
 import { initConsultas } from "./components/consultas.js";
+import { initInformeMensual } from "./components/informeMensual.js";
 import { initActividad } from "./components/actividad.js";
 import { initGraficos } from "./components/graficos.js";
 import { initGroups } from "./components/groups.js";
@@ -31,6 +32,7 @@ async function bootstrap() {
   initProduction();
   initStock();
   initConsultas();
+  initInformeMensual();
   initActividad();
   initGraficos();
   initGroups();

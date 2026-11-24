@@ -1,11 +1,12 @@
 // ============================================================================
-// consultas.js — "Balance y resúmenes": balance financiero, resumen de
+// consultas.js — "Análisis de la producción": informe mensual, resumen de
 // producción e historial completo son comandos de un solo mensaje para
 // Router de estado (no abren ningún flujo de varios pasos), así que cada
 // botón dispara un único enviarTexto por dentro de runComando().
 // ============================================================================
 
 import { runComando } from "../flowClient.js";
+import { abrirInforme, cerrarInforme } from "./informeMensual.js";
 
 export function initConsultas() {
   const menu = document.querySelector("#consultas .cc-menu");
@@ -14,6 +15,13 @@ export function initConsultas() {
 
   menu.querySelectorAll("[data-consulta]").forEach((btn) => {
     btn.addEventListener("click", async () => {
+      // "Informe mensual" tiene su propio panel (informeMensual.js); no pasa por el chat de n8n.
+      if (btn.dataset.consulta === "informe") {
+        resultBox.hidden = true;
+        await abrirInforme();
+        return;
+      }
+      cerrarInforme();
       menu.querySelectorAll("button").forEach((b) => (b.disabled = true));
       resultBox.hidden = false;
       resultBox.classList.remove("is-error");

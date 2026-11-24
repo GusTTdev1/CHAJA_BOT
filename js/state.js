@@ -17,8 +17,8 @@ const state = {
     { id: "p3", type: "parrilleros", name: "Parrilleros — galpón 1", qty: 150, age: 5, createdAt: "2026-08-10" },
   ],
   grupos: [
-    { id: "g1", sourceId: "p1", name: "Ponedoras 1", qty: 5, age: 9, ageUnit: "meses" },
-    { id: "g2", sourceId: "p3", name: "Parrilleros 1A", qty: 60, age: 5, ageUnit: "semanas" },
+    { id: "g1", sourceId: "p1", name: "Ponedoras 1", qty: 5, age: 9, ageUnit: "meses", createdAt: "2026-08-18" },
+    { id: "g2", sourceId: "p3", name: "Parrilleros 1A", qty: 60, age: 5, ageUnit: "semanas", createdAt: "2026-08-18" },
   ],
   movimientos: [
     { id: "m1", direction: "entrada", type: "huevos", qty: 38, date: "2026-08-18", note: "Recolección diaria" },
@@ -60,7 +60,8 @@ export const store = {
     return item;
   },
   addGrupo({ sourceId, name, qty, age, ageUnit }) {
-    const item = { id: nextId(), sourceId, name, qty, age, ageUnit };
+    // createdAt: la edad cargada corresponde a este día; el informe la actualiza sumando el tiempo transcurrido.
+    const item = { id: nextId(), sourceId, name, qty, age, ageUnit, createdAt: new Date().toISOString().slice(0, 10) };
     state.grupos.unshift(item);
     emit();
     return item;

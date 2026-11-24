@@ -120,7 +120,7 @@
   <nav class="tile-grid" id="homeMenu" aria-label="Secciones">
     <a class="tile tile--wheat" href="#produccion"><img class="tile__img" src="assets/icons/registrar.svg" alt="" width="64" height="64"><span class="tile__label">Registrar producción</span></a>
     <a class="tile tile--moss" href="#stock"><img class="tile__img" src="assets/icons/stock.svg" alt="" width="64" height="64"><span class="tile__label">Alta / Baja de stock</span></a>
-    <a class="tile tile--sky" href="#consultas"><img class="tile__img" src="assets/icons/balance.svg" alt="" width="64" height="64"><span class="tile__label">Balance y resúmenes</span></a>
+    <a class="tile tile--sky" href="#consultas"><img class="tile__img" src="assets/icons/balance.svg" alt="" width="64" height="64"><span class="tile__label">Análisis de la producción</span></a>
     <a class="tile tile--clay" href="#actividad"><img class="tile__img" src="assets/icons/actividad.svg" alt="" width="64" height="64"><span class="tile__label">Actividad por fecha</span></a>
     <a class="tile tile--plum" href="#graficos"><img class="tile__img" src="assets/icons/graficos.svg" alt="" width="64" height="64"><span class="tile__label">Gráficos</span></a>
     <a class="tile tile--leaf" href="#grupos"><img class="tile__img" src="assets/icons/grupos.svg" alt="" width="64" height="64"><span class="tile__label">Grupos de producción</span></a>
@@ -216,18 +216,48 @@
       <summary class="panel__header">
         <div>
           <span class="panel__eyebrow">03 · En vivo</span>
-          <h2 class="panel__title" id="consultas-title">Balance y resúmenes</h2>
-          <p class="panel__desc">Consultá el estado del cuaderno: balance financiero, resumen de producción o historial completo.</p>
+          <h2 class="panel__title" id="consultas-title">Análisis de la producción</h2>
+          <p class="panel__desc">Armá el informe del mes con gráficos y análisis, o consultá el resumen de producción y el historial.</p>
         </div>
       </summary>
 
       <div class="panel__content" style="padding-top: 1rem;">
         <div class="cc-menu tile-grid tile-grid--small">
-          <button class="tile tile--wheat" data-consulta="balance"><img class="tile__img" src="assets/icons/balance.svg" alt="" width="64" height="64"><span class="tile__label">Balance financiero</span></button>
+          <button class="tile tile--wheat" data-consulta="informe"><img class="tile__img" src="assets/icons/balance.svg" alt="" width="64" height="64"><span class="tile__label">Informe mensual</span></button>
           <button class="tile tile--sky" data-consulta="resumen"><img class="tile__img" src="assets/icons/resumen.svg" alt="" width="64" height="64"><span class="tile__label">Resumen de producción</span></button>
           <button class="tile tile--clay" data-consulta="info"><img class="tile__img" src="assets/icons/historial.svg" alt="" width="64" height="64"><span class="tile__label">Historial completo</span></button>
         </div>
         <div class="result-box" id="consultasResult" aria-live="polite" hidden></div>
+
+        <!-- Informe mensual: lo maneja js/components/informeMensual.js -->
+        <div class="informe" id="informe" hidden>
+          <div class="informe__controles">
+            <label class="field">
+              <span class="field__label">Producción</span>
+              <select class="field__input" id="informeProduccion">
+                <option value="gallinas">Gallinas (postura)</option>
+                <option value="pollos" disabled>Pollos — próximamente</option>
+                <option value="cerdos" disabled>Cerdos — próximamente</option>
+                <option value="huerta" disabled>Huerta — próximamente</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field__label">Grupo</span>
+              <select class="field__input" id="informeGrupo">
+                <option value="">Todos los grupos</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field__label">Mes de actividad</span>
+              <select class="field__input" id="informeMes"></select>
+            </label>
+            <button class="btn btn--primary" id="informeBtn" type="button">Armar informe mensual</button>
+            <span class="form-status" id="informeStatus" role="status" aria-live="polite"></span>
+          </div>
+          <p class="informe__recomendacion" id="informeRecomendacion" hidden></p>
+          <p class="informe__aviso" id="informeAviso" hidden></p>
+          <div id="informeBody"></div>
+        </div>
       </div>
     </details>
   </section>

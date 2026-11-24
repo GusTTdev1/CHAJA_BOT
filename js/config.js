@@ -55,6 +55,11 @@ export const CONFIG = {
     // Cada cuánto se vuelve a pedir el panel (el Arduino envía cada 5 min).
     refrescoMs: 10 * 1000,
   },
+  // "Análisis de la producción > Informe mensual" (js/components/informeMensual.js).
+  // Webhook propio (workflow CHAJA_BOT_INFORME): acciones "listar" y "generar".
+  informe: {
+    webhookUrl: "https://n8n2.rededubot.org/webhook/chaja-informe-api",
+  },
   // Los tipos de producción (gallinas/pollos/cerdos/huerta) y los eventos de
   // cerdos (produccion/celo/parto/destete/sanidad) están hardcodeados en
   // production.js y en el HTML del modal, en vez de vivir acá: tienen que

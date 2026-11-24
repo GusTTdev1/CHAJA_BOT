@@ -12,8 +12,8 @@ const GUIDE_CONTENT = {
     },
     {
       img: 'assets/icons/balance.svg',
-      titulo: 'Balance y resúmenes',
-      texto: 'Mirá cuánto ganaste o gastaste en un período, con costos y precios.'
+      titulo: 'Análisis de la producción',
+      texto: 'Armá el informe del mes con la curva de postura, el precio del alimento y la relación con las horas de luz.'
     },
     {
       img: 'assets/icons/actividad.svg',

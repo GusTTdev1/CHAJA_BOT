@@ -119,11 +119,11 @@ export function renderInforme(inf) {
   const grid = el("div", "informe-kpis");
   grid.append(
     kpi(fmt(k.total_huevos), "Huevos en el mes", `${fmt(k.dias_con_registro)} días con registro`),
-    kpi(fmt(k.promedio_diario, 1), "Promedio por día", k.tendencia_pct == null ? null : `${k.tendencia_pct > 0 ? "▲" : k.tendencia_pct < 0 ? "▼" : "="} ${fmt(Math.abs(k.tendencia_pct), 1)}% 2ª mitad vs 1ª`),
-    kpi(k.mejor_dia ? fmt(k.mejor_dia.huevos) : "—", "Mejor día", k.mejor_dia ? `día ${Number(k.mejor_dia.fecha.slice(8))}` : null),
+    kpi(fmt(k.promedio_diario, 1), "Promedio por día", [k.tendencia_pct == null ? null : `${k.tendencia_pct > 0 ? "▲" : k.tendencia_pct < 0 ? "▼" : "="} ${fmt(Math.abs(k.tendencia_pct), 1)}% 2ª mitad vs 1ª`, k.mejor_dia ? `mejor: día ${Number(k.mejor_dia.fecha.slice(8))} (${fmt(k.mejor_dia.huevos)})` : null].filter(Boolean).join(" · ") || null),
     kpi(plata(k.gasto_alimento_total), "Gasto en alimento", `${fmt(k.alimento_kg_total, 1)} kg consumidos`),
     kpi(plata(k.precio_kg_promedio), "Precio del alimento", k.precio_kg_min != null ? `por kg · entre ${plata(k.precio_kg_min)} y ${plata(k.precio_kg_max)}` : "por kg"),
-    kpi(plata(k.costo_por_docena), "Costo por docena", "alimento / huevos")
+    kpi(plata(k.costo_por_docena), "Costo por docena", "solo alimento / huevos"),
+    kpi(plata(k.precio_venta_sugerido_docena), "Precio de venta sugerido", k.precio_venta_sugerido_docena != null ? `por docena · maple ${plata(k.precio_maple_referencia)} + 10%${k.margen_docena != null ? ` · margen ${plata(k.margen_docena)}` : ""}` : "por docena")
   );
   if (ep) {
     grid.append(
@@ -153,7 +153,8 @@ export function renderInforme(inf) {
 
   // 3) Postura vs horas de luz
   const hayLuz = hay(d.horas_luz) && hay(d.postura);
-  const sub3 = c.r != null ? `Relación ${c.lectura} · r = ${fmt(c.r, 2)} con ${c.n} días` : "Horas de luz por día (barras) junto a la postura (línea)";
+  const sub3 = (c.r != null ? `Relación ${c.lectura} · r = ${fmt(c.r, 2)} con ${c.n} días` : "Horas de luz por día (barras) junto a la postura (línea)")
+    + (k.dias_sin_luz > 0 ? ` · ${k.dias_sin_luz} día(s) sin lectura del sensor (no cuentan como 0 h)` : "");
   charts3.append(bloqueGrafico("Postura y horas de luz", sub3, hayLuz, "No hay lecturas de horas de luz del sensor para este mes.", (cv) =>
     new window.Chart(cv, {
       data: { labels: dias, datasets: [
